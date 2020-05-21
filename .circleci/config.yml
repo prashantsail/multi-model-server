@@ -3,9 +3,10 @@ jobs:
     build:
       docker:
         - image: circleci/openjdk:8u252
-        - image: circleci/python:3.6
+#        - image: circleci/python:3.6
       steps:
         - checkout
-        - run: pip install .
+        - run: frontend/gradlew -p frontend clean build
+#        - run: pip install .
 #        - run: python --version
 #        - run: java -version
