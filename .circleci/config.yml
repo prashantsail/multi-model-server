@@ -5,7 +5,6 @@ jobs:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
 #        - image:  awsdeeplearningteam/multi-model-server:latest
 #        - image: circleci/python:3.6
-      resource_class: xlarge
       steps:
         - checkout
         - run:
@@ -19,7 +18,7 @@ jobs:
               pip install requests
               pip install mxnet==1.5.0
               pip install psutil
-        - run: frontend/gradlew -p frontend clean build
+        - run: frontend/gradlew -p frontend clean build --no-daemon --max-workers 2
 #        - run: pip install .
 #        - run: python --version
 #        - run: java -version
