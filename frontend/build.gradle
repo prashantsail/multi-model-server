@@ -30,11 +30,6 @@ configure(javaProjects()) {
 
     test {
 
-        maxParallelForks = 2
-        maxHeapSize = '128m'
-        forkEvery = 100   // helps when tests leak memory
-        jvmArgs '-Xmx512m', '-Xms128m', "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap"
-
         useTestNG() {
             // suiteXmlFiles << new File(rootDir, "testng.xml") //This is how to add custom testng.xml
         }
