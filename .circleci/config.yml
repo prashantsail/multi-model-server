@@ -2,7 +2,7 @@ version: 2.1
 jobs:
     build:
       docker:
-        - image awsdeeplearningteam/mxnet-model-server:latest
+        - image: awsdeeplearningteam/mxnet-model-server:latest
 #        - image:  awsdeeplearningteam/multi-model-server:latest
 #        - image: circleci/python:3.6
       steps:
