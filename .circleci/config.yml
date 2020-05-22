@@ -23,5 +23,5 @@ jobs:
 #              pip install .
 
         - run: pip install pytest pytest-cov numpy mxnet==1.5.0 mock psutil Image pytest-mock
-        - run: pwd
+        - run: pwd && ls -ltr
         - run: python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
