@@ -26,6 +26,10 @@ jobs:
             command: |
               export _JAVA_OPTIONS="-Xmx2048m"
               pip install .
+        - store_artifacts:
+            path: frontend/server/build/reports/tests/test
+            destination: frontend-results
+
         - run: python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
         - store_artifacts:
             path: htmlcov
