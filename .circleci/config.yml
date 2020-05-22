@@ -21,11 +21,14 @@ jobs:
               pip install pytest==4.0.0
               pip install pytest-mock
               pip install pytest-cov
-#        - run: frontend/gradlew -p frontend clean fJ build --no-daemon --max-workers 2
         - run:
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
-              pip install .
+              frontend/gradlew -p frontend clean fJ build --no-daemon --max-workers 2
+#        - run:
+#            command: |
+#              export _JAVA_OPTIONS="-Xmx1024m"
+#              pip install .
         - store_artifacts:
             path: frontend/server/build/reports/tests/test
             destination: frontend-results
