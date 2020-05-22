@@ -64,7 +64,7 @@ class TestInit:
             MXNetModelServiceWorker('unix', self.socket_name)
 
     @pytest.fixture()
-    def patches1(self, mocker):
+    def patches(self, mocker):
         Patches = namedtuple('Patches', ['remove', 'socket'])
         patches = Patches(
             mocker.patch('os.remove'),
@@ -72,10 +72,10 @@ class TestInit:
         )
         return patches
 
-    def test_success(self, patches1):
+    def test_success(self, patches):
         MXNetModelServiceWorker('unix', self.socket_name)
-        patches1.remove.assert_called_once_with(self.socket_name)
-        patches1.socket.assert_called_once_with(socket.AF_UNIX, socket.SOCK_STREAM)
+        patches.remove.assert_called_once_with(self.socket_name)
+        patches.socket.assert_called_once_with(socket.AF_UNIX, socket.SOCK_STREAM)
 
 
 # noinspection PyClassHasNoInit
@@ -129,20 +129,20 @@ class TestLoadModel:
     data = {'modelPath': b'mpath', 'modelName': b'name', 'handler': b'handled'}
 
     @pytest.fixture()
-    def patches2(self, mocker):
+    def patches(self, mocker):
         Patches = namedtuple('Patches', ['loader'])
         patches = Patches(mocker.patch('mms.model_service_worker.ModelLoaderFactory'))
         return patches
 
-    def test_load_model(self, patches2, model_service_worker):
-        patches2.loader.get_model_loader.return_value = Mock()
+    def test_load_model(self, patches, model_service_worker):
+        patches.loader.get_model_loader.return_value = Mock()
         model_service_worker.load_model(self.data)
-        patches2.loader.get_model_loader.assert_called()
+        patches.loader.get_model_loader.assert_called()
 
     # noinspection PyUnusedLocal
     @pytest.mark.parametrize('batch_size', [(None, None), ('1', 1)])
     @pytest.mark.parametrize('gpu', [(None, None), ('2', 2)])
-    def test_optional_args(self, patches2, model_service_worker, batch_size, gpu):
+    def test_optional_args(self, patches, model_service_worker, batch_size, gpu):
         data = self.data.copy()
         if batch_size[0]:
             data['batchSize'] = batch_size[0]
@@ -156,15 +156,15 @@ class TestHandleConnection:
     data = {'modelPath': b'mpath', 'modelName': b'name', 'handler': b'handled'}
 
     @pytest.fixture()
-    def patches3(self, mocker):
+    def patches(self, mocker):
         Patches = namedtuple("Patches", ["retrieve_msg"])
         patches = Patches(
             mocker.patch("mms.model_service_worker.retrieve_msg")
         )
         return patches
 
-    def test_handle_connection(self, patches3, model_service_worker):
-        patches3.retrieve_msg.side_effect = [(b"L", ""), (b"I", ""), (b"U", "")]
+    def test_handle_connection(self, patches, model_service_worker):
+        patches.retrieve_msg.side_effect = [(b"L", ""), (b"I", ""), (b"U", "")]
         model_service_worker.load_model = Mock()
         model_service_worker.service.predict = Mock()
         model_service_worker._remap_io = Mock()
