@@ -6,7 +6,6 @@ jobs:
 #        - image: circleci/python:3.6.5
       steps:
         - checkout
-#        - run: frontend/gradlew -p frontend clean fJ build --no-daemon --max-workers 2
         - run:
             command: |
               pip install psutil
@@ -22,10 +21,11 @@ jobs:
               pip install pytest==4.0.0
               pip install pytest-mock
               pip install pytest-cov
-        - run:
-            command: |
-              export _JAVA_OPTIONS="-Xmx2048m"
-              pip install .
+        - run: frontend/gradlew -p frontend clean fJ build --no-daemon --max-workers 2
+#        - run:
+#            command: |
+#              export _JAVA_OPTIONS="-Xmx2048m"
+#              pip install .
         - run: python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
         - store_artifacts:
             path: htmlcov
