@@ -21,3 +21,4 @@ jobs:
             command: |
               export _JAVA_OPTIONS="-Xmx2048m"
               pip install .
+        - run: python -m pytest --cov-report term-missing --cov=mms/ mms/tests/unit_tests/
