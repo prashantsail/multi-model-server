@@ -2,8 +2,8 @@ version: 2.1
 jobs:
     build:
       docker:
-#        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
-        - image: circleci/python:3.6.5
+        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
+#        - image: circleci/python:3.6.5
       steps:
         - checkout
 #        - run:
@@ -24,5 +24,4 @@ jobs:
 #              pip install .
 
         - run: sudo pip install pytest pytest-cov numpy mxnet==1.5.0 mock psutil Image pytest-mock
-        - run: pwd && ls -ltr
         - run: python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
