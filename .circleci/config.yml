@@ -19,5 +19,5 @@ jobs:
 #        - run: frontend/gradlew -p frontend clean fJ build --no-daemon --max-workers 2
         - run:
             command: |
-              export _JAVA_OPTIONS="-Xmx2048m -XX:-UseLargePages -XX:+UseG1GC -XX:MaxMetaspaceSize=32M -XX:MaxDirectMemorySize=10m -XX:OnOutOfMemoryError='kill -9 %p'"
+              export _JAVA_OPTIONS="-Xmx2048m"
               pip install .
