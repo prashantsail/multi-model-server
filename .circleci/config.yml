@@ -7,17 +7,17 @@ jobs:
 #        - image: circleci/python:3.6
       steps:
         - checkout
-        - run:
-            command: |
-              pip install future
-              pip install Pillow
-              pip install pytest==4.0.0
-              pip install wheel
-              pip install twine
-              pip install pytest-mock
-              pip install requests
-              pip install mxnet==1.5.0
-              pip install psutil
+#        - run:
+#            command: |
+#              pip install future
+#              pip install Pillow
+#              pip install pytest==4.0.0
+#              pip install wheel
+#              pip install twine
+#              pip install pytest-mock
+#              pip install requests
+#              pip install mxnet==1.5.0
+#              pip install psutil
         - run: frontend/gradlew -p frontend clean fJ build --no-daemon --max-workers 2
 #        - run: pip install .
 #        - run: python --version
