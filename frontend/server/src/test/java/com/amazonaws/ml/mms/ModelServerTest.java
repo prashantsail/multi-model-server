@@ -96,7 +96,7 @@ public class ModelServerTest {
         TestUtils.init();
     }
 
-//     @BeforeSuite
+    @BeforeSuite
     public void beforeSuite() throws InterruptedException, IOException, GeneralSecurityException {
         ConfigManager.init(new ConfigManager.Arguments());
         configManager = ConfigManager.getInstance();
@@ -120,12 +120,12 @@ public class ModelServerTest {
         }
     }
 
-//     @AfterSuite
+    @AfterSuite
     public void afterSuite() {
         server.stop();
     }
 
-//     @Test
+    @Test
     public void test()
             throws InterruptedException, HttpPostRequestEncoder.ErrorDataEncoderException,
                     IOException, NoSuchFieldException, IllegalAccessException {

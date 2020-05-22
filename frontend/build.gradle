@@ -29,7 +29,6 @@ configure(javaProjects()) {
 	apply from: file("${rootProject.projectDir}/tools/gradle/check.gradle")
 
     test {
-
         useTestNG() {
             // suiteXmlFiles << new File(rootDir, "testng.xml") //This is how to add custom testng.xml
         }
@@ -49,7 +48,7 @@ configure(javaProjects()) {
         violationRules {
             rule {
                 limit {
-                    minimum = 0.10
+                    minimum = 0.75
                 }
             }
         }
