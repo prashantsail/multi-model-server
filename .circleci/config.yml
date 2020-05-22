@@ -23,6 +23,6 @@ jobs:
 #              export _JAVA_OPTIONS="-Xmx2048m"
 #              pip install .
 
-        - run: pip install pytest pytest-cov numpy mxnet==1.5.0 mock psutil Image
+        - run: pip install pytest==4.0.0 pytest-cov numpy mxnet==1.5.0 mock psutil Image
         - run: sudo pip install pytest-mock
         - run: python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
