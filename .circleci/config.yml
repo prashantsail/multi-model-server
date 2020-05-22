@@ -27,3 +27,5 @@ jobs:
               export _JAVA_OPTIONS="-Xmx2048m"
               pip install .
         - run: python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
+        - store_artifacts:
+            path: htmlcov
