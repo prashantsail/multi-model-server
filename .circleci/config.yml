@@ -24,7 +24,7 @@ jobs:
 #        - run: frontend/gradlew -p frontend clean fJ build --no-daemon --max-workers 2
         - run:
             command: |
-              export _JAVA_OPTIONS="-Xmx2048m"
+              export _JAVA_OPTIONS="-Xmx1024m"
               pip install .
         - store_artifacts:
             path: frontend/server/build/reports/tests/test

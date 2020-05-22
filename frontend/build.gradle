@@ -33,6 +33,8 @@ configure(javaProjects()) {
             // suiteXmlFiles << new File(rootDir, "testng.xml") //This is how to add custom testng.xml
         }
 
+        jvmArgs '-XX:MaxPermSize=512m'
+
         testLogging {
             showStandardStreams = true
             events "passed", "skipped", "failed", "standardOut", "standardError"
