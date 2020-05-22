@@ -21,4 +21,5 @@ jobs:
             command: |
               export _JAVA_OPTIONS="-Xmx2048m"
               pip install .
+        - run: pip install mock pytest pylint pytest-cov
         - run: python -m pytest --cov-report term-missing --cov=mms/ mms/tests/unit_tests/
