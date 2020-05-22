@@ -18,7 +18,7 @@ jobs:
               pip install requests
               pip install mxnet==1.5.0
               pip install psutil
-        - run: frontend/gradlew -p frontend clean build --no-daemon --max-workers 2
+        - run: frontend/gradlew -p frontend clean fJ build --no-daemon --max-workers 2
 #        - run: pip install .
 #        - run: python --version
 #        - run: java -version
