@@ -45,7 +45,10 @@ jobs:
               sudo npm install -g newman newman-reporter-html
               mkdir test/report
               mkdir test/model_store
-        - run: multi-model-server --start --model-store test/model_store
+        - run:
+            command: |
+              multi-model-server --start --model-store test/model_store
+              sleep 180
         - run:
             command: |
               newman run -e test/postman/environment.json --bail --verbose test/postman/management_api_test_collection.json -r cli,html --reporter-html-export test/report/management_report.html
