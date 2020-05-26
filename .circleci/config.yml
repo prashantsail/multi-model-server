@@ -40,8 +40,9 @@ jobs:
 
         - run:
             command: |
-              sudo apt-get -y install nodejs-dev node-gyp npm
-              sudo npm install -g npm
+              curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+#              sudo npm install -g npm
               sudo npm install -g newman newman-reporter-html
               mkdir test/report
               mkdir test/model_store
