@@ -53,7 +53,7 @@ jobs:
               pwd
               multi-model-server --start --model-store ../test/model_store >> ps.log 2>&1
               sleep 30
-              newman run -e ../test/postman/environment.json --bail --verbose ../test/postman/management_api_test_collection.json -r cli,html --reporter-html-export ../test/report/management_report.html
+              newman run -e ../test/postman/environment.json --verbose ../test/postman/management_api_test_collection.json -r cli,html --reporter-html-export ../test/report/management_report.html
         - store_artifacts:
             path: docker/ps.log
             destination: mmslog
