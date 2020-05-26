@@ -54,12 +54,6 @@ start_secure_mms() {
 }
 
 
-delete_model_store_snapshots() {
-  rm -f $MODEL_STORE/*
-  rm -rf logs/
-}
-
-
 run_postman_test() {
   # Run Postman Scripts
   mkdir $ROOT_DIR/report/
@@ -71,9 +65,15 @@ run_postman_test() {
   newman run -e postman/environment.json --bail --verbose postman/management_api_test_collection.json \
 	  -r cli,html --reporter-html-export $ROOT_DIR/report/management_report.html >>$1 2>&1
 
+  # Run Inference API Tests after Restart
+  stop_mms_serve
+  start_mms $MODEL_STORE $MMS_LOG_FILE
+  newman run -e postman/environment.json --bail --verbose postman/inference_api_test_collection.json \
+	  -d postman/inference_data.json -r cli,html --reporter-html-export $ROOT_DIR/report/inference_report.html >>$1 2>&1
+
+
   # Run Https test cases
   stop_mms_serve
-  # delete_model_store_snapshots
   start_secure_mms $MODEL_STORE $MMS_LOG_FILE
   newman run --insecure -e postman/environment.json --bail --verbose postman/https_test_collection.json \
 	  -r cli,html --reporter-html-export $ROOT_DIR/report/MMS_https_test_report.html >>$1 2>&1
@@ -93,7 +93,7 @@ sudo rm -f $TEST_EXECUTION_LOG_FILE $MMS_LOG_FILE
 
 echo "** Execuing MMS Regression Test Suite executon for " $MMS_REPO " **"
 
-#install_mms_from_source $MMS_REPO $BRANCH
+install_mms_from_source $MMS_REPO $BRANCH
 run_postman_test $TEST_EXECUTION_LOG_FILE
 
 echo "** Tests Complete ** "

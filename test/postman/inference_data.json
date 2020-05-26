@@ -1,0 +1,25 @@
+[{
+  "url": "https://s3.amazonaws.com/model-server/model_archive_1.0/alexnet.mar",
+  "model_name": "alexnet",
+  "worker":1,
+  "synchronous":"true",
+  "file":"resources/kitten.jpg",
+  "output_type":"others"
+},
+{
+  "url": "https://s3.amazonaws.com/model-server/model_archive_1.0/inception-bn.mar",
+  "model_name": "inception-bn",
+  "worker":1,
+  "synchronous":"true",
+  "file":"resources/kitten.jpg",
+  "output_type":"others"
+},
+{
+  "url": "https://s3.amazonaws.com/model-server/model_archive_1.0/onnx-inception_v1.mar",
+  "model_name": "inception_v1",
+  "worker":1,
+  "synchronous":"true",
+  "file":"resources/kitten.jpg",
+  "output_type":"others"
+}
+]
