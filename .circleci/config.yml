@@ -38,7 +38,7 @@ jobs:
             path: htmlcov
             destination: pytest-results
 
-        - run: sudo apt-get -y install nodejs
+        - run: sudo apt-get -y install nodejs npm
         - run: sudo npm install -g newman newman-reporter-html
         - run:
             command:|
