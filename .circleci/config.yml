@@ -49,6 +49,8 @@ jobs:
 
         - run:
             command: |
+              cd docker
+              pwd
               multi-model-server --start --models squeezenet=https://s3.amazonaws.com/model-server/model_archive_1.0/squeezenet_v1.1.mar
               sleep 180
         - run:
