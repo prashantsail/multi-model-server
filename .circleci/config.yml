@@ -56,4 +56,5 @@ jobs:
         - run:
             command: |
               curl -O https://s3.amazonaws.com/model-server/inputs/kitten.jpg
-              curl -X POST http://locahost:8080/predictions/squeezenet -T kitten.jpg
+              curl -X POST http://localhost:8080/predictions/squeezenet -T kitten.jpg
+              curl http://localhost:8081/models
