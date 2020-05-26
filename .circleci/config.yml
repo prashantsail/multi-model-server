@@ -38,6 +38,7 @@ jobs:
             path: htmlcov
             destination: pytest-results
 
+###############
         - run:
             command: |
               curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
@@ -45,10 +46,12 @@ jobs:
               sudo npm install -g newman newman-reporter-html
               mkdir test/report
               mkdir test/model_store
+
         - run:
             command: |
-              multi-model-server --start --model-store test/model_store
+              multi-model-server --start --models squeezenet=https://s3.amazonaws.com/model-server/model_archive_1.0/squeezenet_v1.1.mar
               sleep 180
         - run:
             command: |
-              newman run -e test/postman/environment.json --bail --verbose test/postman/management_api_test_collection.json -r cli,html --reporter-html-export test/report/management_report.html
+              curl -O https://s3.amazonaws.com/model-server/inputs/kitten.jpg
+              curl -X POST http://127.0.0.1:8080/predictions/squeezenet -T kitten.jpg
