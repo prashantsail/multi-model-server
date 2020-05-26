@@ -49,13 +49,11 @@ jobs:
 
         - run:
             command: |
-              cd docker
-              pwd
-              multi-model-server --start --model-store ../test/model_store >> ps.log 2>&1
+              multi-model-server --start --model-store test/model_store >> mms.log 2>&1
               sleep 30
-              newman run -e ../test/postman/environment.json --verbose ../test/postman/management_api_test_collection.json -r cli,html --reporter-html-export ../test/report/management_report.html
+              newman run -e test/postman/environment.json --verbose test/postman/management_api_test_collection.json -r cli,html --reporter-html-export test/report/management_report.html
         - store_artifacts:
-            path: docker/ps.log
+            path: docker/mms.log
             destination: mmslog
         - store_artifacts:
             path: test/report
