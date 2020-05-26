@@ -51,12 +51,12 @@ jobs:
             command: |
               cd docker
               pwd
-              multi-model-server --start >>ps.log 2>&1
+              multi-model-server --start --model-store ../test/model_store >> ps.log 2>&1
               sleep 30
-              curl -v -X POST "http://localhost:8081/models?initial_workers=1&synchronous=true&url=https%3A%2F%2Fs3.amazonaws.com%2Fmodel-server%2Fmodel_archive_1.0%2Fsqueezenet_v1.1.mar"
-              curl http://localhost:8081/models
-              curl -O https://s3.amazonaws.com/model-server/inputs/kitten.jpg
-              curl -X POST http://localhost:8080/predictions/squeezenet_v1.1 -T kitten.jpg
+              newman run -e ../test/postman/environment.json --bail --verbose ../test/postman/management_api_test_collection.json -r cli,html --reporter-html-export ../test/report/management_report.html
         - store_artifacts:
             path: docker/ps.log
             destination: mmslog
+        - store_artifacts:
+            path: test/report
+            destination: api-results
