@@ -21,7 +21,7 @@ install_mms_from_source() {
   export PATH="$PATH"
   sudo npm install -g newman newman-reporter-html
   pip install mxnet-mkl
-  # Clone & Build TorchServe
+  # Clone & Build MMS
   echo "Installing MMS from source"
   git clone -b $2 $1
   cd multi-model-server
@@ -34,7 +34,7 @@ install_mms_from_source() {
 
 start_mms() {
 
-  # Start Torchserve with Model Store
+  # Start MMS with Model Store
   multi-model-server --start --model-store $1  &>> $2
   sleep 10
   curl http://127.0.0.1:8081/models
@@ -47,7 +47,7 @@ stop_mms_serve() {
 
 start_secure_mms() {
 
-  # Start Torchserve with Model Store
+  # Start MMS with Model Store
   multi-model-server --start --mms-config resources/config.properties --model-store $1  &>> $2
   sleep 10
   curl --insecure -X GET https://127.0.0.1:8444/models
@@ -67,7 +67,7 @@ run_postman_test() {
   set +e
   # Run Management API Tests
   stop_mms_serve
-  start_mms $MODEL_STORE $TS_LOG_FILE
+  start_mms $MODEL_STORE $MMS_LOG_FILE
   newman run -e postman/environment.json --bail --verbose postman/management_api_test_collection.json \
 	  -r cli,html --reporter-html-export $ROOT_DIR/report/management_report.html >>$1 2>&1
 
@@ -87,12 +87,13 @@ run_postman_test() {
 sudo rm -rf $ROOT_DIR && sudo mkdir $ROOT_DIR
 sudo chown -R $USER:$USER $ROOT_DIR
 cd $ROOT_DIR
+mkdir $MODEL_STORE
 
 sudo rm -f $TEST_EXECUTION_LOG_FILE $MMS_LOG_FILE
 
-echo "** Execuing MMS Regression Test Suite executon for " $ " **"
+echo "** Execuing MMS Regression Test Suite executon for " $MMS_REPO " **"
 
-install_mms_from_source $MMS_REPO $BRANCH
+#install_mms_from_source $MMS_REPO $BRANCH
 run_postman_test $TEST_EXECUTION_LOG_FILE
 
 echo "** Tests Complete ** "
