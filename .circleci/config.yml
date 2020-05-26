@@ -40,7 +40,7 @@ jobs:
 
         - run:
             command: |
-              sudo apt-get -y install nodejs-dev node-gyp libssl1.0-dev npm
+              sudo apt-get -y install nodejs-dev node-gyp npm
               sudo npm install -g npm
               sudo npm install -g newman newman-reporter-html
               mkdir test/report
