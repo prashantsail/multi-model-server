@@ -51,11 +51,14 @@ jobs:
             command: |
               cd docker
               pwd
-              multi-model-server --start
+              multi-model-server --start >>ps.log 2>&1
               sleep 30
               curl -v -X POST "http://localhost:8081/models?initial_workers=1&synchronous=true&url=https%3A%2F%2Fs3.amazonaws.com%2Fmodel-server%2Fmodel_archive_1.0%2Fsqueezenet_v1.1.mar"
               curl http://localhost:8081/models
         - run:
             command: |
               curl -O https://s3.amazonaws.com/model-server/inputs/kitten.jpg
-              curl -X POST http://localhost:8080/predictions/squeezenet -T kitten.jpg
+              curl -X POST http://localhost:8080/predictions/squeezenet_v1.1 -T kitten.jpg
+        - store_artifacts:
+            path: docker/ps.log
+            destination: mmslog
