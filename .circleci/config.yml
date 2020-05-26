@@ -6,44 +6,45 @@ jobs:
 #        - image: circleci/python:3.6.5
       steps:
         - checkout
-        - run:
-            command: |
-              pip install psutil
-              pip install future
-              pip install Pillow
-              pip install wheel
-              pip install twine
-              pip install requests
-              pip install mock
-              pip install numpy
-              pip install Image
-              pip install mxnet==1.5.0
-              pip install pytest==4.0.0
-              pip install pytest-mock
-              pip install pytest-cov
+#        - run:
+#            command: |
+#              pip install psutil
+#              pip install future
+#              pip install Pillow
+#              pip install wheel
+#              pip install twine
+#              pip install requests
+#              pip install mock
+#              pip install numpy
+#              pip install Image
+#              pip install mxnet==1.5.0
+#              pip install pytest==4.0.0
+#              pip install pytest-mock
+#              pip install pytest-cov
+##        - run:
+##            command: |
+##              export _JAVA_OPTIONS="-Xmx1024m"
+##              frontend/gradlew -p frontend clean fJ build --no-daemon --max-workers 2
 #        - run:
 #            command: |
 #              export _JAVA_OPTIONS="-Xmx1024m"
-#              frontend/gradlew -p frontend clean fJ build --no-daemon --max-workers 2
+#              pip install .
+#        - store_artifacts:
+#            path: frontend/server/build/reports/tests/test
+#            destination: frontend-results
+#
+#        - run: python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
+#        - store_artifacts:
+#            path: htmlcov
+#            destination: pytest-results
+
         - run:
             command: |
-              export _JAVA_OPTIONS="-Xmx1024m"
-              pip install .
-        - store_artifacts:
-            path: frontend/server/build/reports/tests/test
-            destination: frontend-results
-
-        - run: python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
-        - store_artifacts:
-            path: htmlcov
-            destination: pytest-results
-
-        - run: sudo apt-get -y install nodejs npm
-        - run: sudo npm install -g newman newman-reporter-html
-        - run:
-            command:|
+              sudo apt-get -y install nodejs-dev node-gyp libssl1.0-dev npm
+              sudo npm install -g npm
+              sudo npm install -g newman newman-reporter-html
               mkdir test/report
-              mkdri test/model_store
+              mkdir test/model_store
         - run: multi-model-server --start --model-store test/model_store
         - run:
             command: |
