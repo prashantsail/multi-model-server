@@ -4,9 +4,12 @@ jobs:
       docker:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
 #        - image: circleci/python:3.6.5
+
       steps:
         - checkout
+
         - run:
+            name: Install python dependencies
             command: |
               pip install psutil
               pip install future
@@ -21,25 +24,36 @@ jobs:
               pip install pytest==4.0.0
               pip install pytest-mock
               pip install pytest-cov
+
 #        - run:
 #            command: |
 #              export _JAVA_OPTIONS="-Xmx1024m"
 #              frontend/gradlew -p frontend clean fJ build --no-daemon --max-workers 2
+
         - run:
+            name: Build and Install MMS
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
               pip install .
+
         - store_artifacts:
+            name: Store gradle testng results
             path: frontend/server/build/reports/tests/test
             destination: frontend-results
 
-        - run: python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
+        - run:
+            name: Execute python unit tests
+            command: |
+              python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
+
         - store_artifacts:
+            name: Store python Test results
             path: htmlcov
             destination: pytest-results
 
 ###############
         - run:
+            name: Install nodejs, newman & newman-reporter-html
             command: |
               curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
               sudo apt-get install -y nodejs
@@ -48,13 +62,18 @@ jobs:
               mkdir test/model_store
 
         - run:
+            name: Start server, Execute API Tests
             command: |
               multi-model-server --start --model-store test/model_store >> mms.log 2>&1
               sleep 30
               newman run -e test/postman/environment.json --verbose test/postman/management_api_test_collection.json -r cli,html --reporter-html-export test/report/management_report.html
+
         - store_artifacts:
+            name: Store server logs from API tests
             path: docker/mms.log
             destination: mmslog
+
         - store_artifacts:
+            name: Store API test results
             path: test/report
             destination: api-results
