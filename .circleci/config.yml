@@ -93,6 +93,8 @@ jobs:
               tar -xzf apache-jmeter-5.3.tgz
               cd apache-jmeter-5.3
               ln -s /opt/apache-jmeter-5.3/bin/jmeter /usr/local/bin/jmeter
+              mkdir -p /home/ubuntu/.linuxbrew/Cellar/
+              ln -s /opt/apache-jmeter-5.3/bin/jmeter /home/ubuntu/.linuxbrew/Cellar/jmeter
 
               wget https://jmeter-plugins.org/get/ -O lib/ext/jmeter-plugins-manager-1.4.jar
               wget http://search.maven.org/remotecontent?filepath=kg/apc/cmdrunner/2.2/cmdrunner-2.2.jar -O lib/cmdrunner-2.2.jar
