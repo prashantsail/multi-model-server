@@ -103,8 +103,8 @@ jobs:
         - run:
             name: Start server, Execute benchmark tests
             command: |
-              multi-model-server --start --models resnet-18=https://s3.amazonaws.com/model-server/model_archive_1.0/resnet-18.mar
-              sleep 300
+              multi-model-server --start
+              sleep 30
               cd benchmarks
               python benchmark.py latency
               multi-model-server --stop
