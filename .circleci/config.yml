@@ -8,6 +8,8 @@ jobs:
       steps:
         - checkout
 
+############### MMS BUILD
+
         - run:
             name: Install python dependencies
             command: |
@@ -25,11 +27,6 @@ jobs:
               pip install pytest-mock
               pip install pytest-cov
 
-#        - run:
-#            command: |
-#              export _JAVA_OPTIONS="-Xmx1024m"
-#              frontend/gradlew -p frontend clean fJ build --no-daemon --max-workers 2
-
         - run:
             name: Build and Install MMS
             command: |
@@ -41,39 +38,52 @@ jobs:
             path: frontend/server/build/reports/tests/test
             destination: frontend-results
 
-        - run:
-            name: Execute python unit tests
-            command: |
-              python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
+############### PYTHON UNIT TESTS
 
-        - store_artifacts:
-            name: Store python Test results
-            path: htmlcov
-            destination: pytest-results
+#        - run:
+#            name: Execute python unit tests
+#            command: |
+#              python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
+#
+#        - store_artifacts:
+#            name: Store python Test results
+#            path: htmlcov
+#            destination: pytest-results
 
-###############
-        - run:
-            name: Install nodejs, newman & newman-reporter-html
-            command: |
-              curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-              sudo apt-get install -y nodejs
-              sudo npm install -g newman newman-reporter-html
-              mkdir test/report
-              mkdir test/model_store
+############### API TESTS
+#        - run:
+#            name: Install nodejs, newman & newman-reporter-html
+#            command: |
+#              curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+#              sudo apt-get install -y nodejs
+#              sudo npm install -g newman newman-reporter-html
+#              mkdir test/report
+#              mkdir test/model_store
+#
+#        - run:
+#            name: Start server, Execute API Tests
+#            command: |
+#              multi-model-server --start --model-store test/model_store >> mms.log 2>&1
+#              sleep 30
+#              newman run -e test/postman/environment.json --verbose test/postman/management_api_test_collection.json -r cli,html --reporter-html-export test/report/management_report.html
+#              multi-model-server --stop
+#
+#        - store_artifacts:
+#            name: Store server logs from API tests
+#            path: docker/mms.log
+#            destination: mmslog
+#
+#        - store_artifacts:
+#            name: Store API test results
+#            path: test/report
+#            destination: api-results
 
+############### BENCHMARK TESTS
         - run:
-            name: Start server, Execute API Tests
-            command: |
-              multi-model-server --start --model-store test/model_store >> mms.log 2>&1
+            name: Start server, Execute benchmark tests
+            commands: |
+              multi-model-server --start --models resnet-18=https://s3.amazonaws.com/model-server/model_archive_1.0/resnet-18.mar
               sleep 30
-              newman run -e test/postman/environment.json --verbose test/postman/management_api_test_collection.json -r cli,html --reporter-html-export test/report/management_report.html
-
-        - store_artifacts:
-            name: Store server logs from API tests
-            path: docker/mms.log
-            destination: mmslog
-
-        - store_artifacts:
-            name: Store API test results
-            path: test/report
-            destination: api-results
+              cd benchmarks
+              python benchmark.py
+              multi-model-server --stop
