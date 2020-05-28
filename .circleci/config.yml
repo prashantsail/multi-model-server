@@ -1,54 +1,54 @@
-version: 2.1
-jobs:
-    build:
-      docker:
-        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
-
-      steps:
-        - checkout
-
-############### MMS BUILD
-
-        - run:
-            name: Install python dependencies
-            command: |
-              pip install psutil
-              pip install future
-              pip install Pillow
-              pip install wheel
-              pip install twine
-              pip install requests
-              pip install mock
-              pip install numpy
-              pip install Image
-              pip install mxnet==1.5.0
-              pip install pytest==4.0.0
-              pip install pytest-mock
-              pip install pytest-cov
-
-        - run:
-            name: Build and Install MMS
-            command: |
-              export _JAVA_OPTIONS="-Xmx1024m"
-              pip install .
-
-        - store_artifacts:
-            name: Store gradle testng results
-            path: frontend/server/build/reports/tests/test
-            destination: frontend-results
-
-############### PYTHON UNIT TESTS
-
-        - run:
-            name: Execute python unit tests
-            command: |
-              python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
-
-        - store_artifacts:
-            name: Store python Test results
-            path: htmlcov
-            destination: pytest-results
-
+#version: 2.1
+#jobs:
+#    build:
+#      docker:
+#        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
+#
+#      steps:
+#        - checkout
+#
+################ MMS BUILD
+#
+#        - run:
+#            name: Install python dependencies
+#            command: |
+#              pip install psutil
+#              pip install future
+#              pip install Pillow
+#              pip install wheel
+#              pip install twine
+#              pip install requests
+#              pip install mock
+#              pip install numpy
+#              pip install Image
+#              pip install mxnet==1.5.0
+#              pip install pytest==4.0.0
+#              pip install pytest-mock
+#              pip install pytest-cov
+#
+#        - run:
+#            name: Build and Install MMS
+#            command: |
+#              export _JAVA_OPTIONS="-Xmx1024m"
+#              pip install .
+#
+#        - store_artifacts:
+#            name: Store gradle testng results
+#            path: frontend/server/build/reports/tests/test
+#            destination: frontend-results
+#
+################ PYTHON UNIT TESTS
+#
+#        - run:
+#            name: Execute python unit tests
+#            command: |
+#              python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
+#
+#        - store_artifacts:
+#            name: Store python Test results
+#            path: htmlcov
+#            destination: pytest-results
+#
 ################ API TESTS
 #        - run:
 #            name: Install nodejs, newman & newman-reporter-html
@@ -122,75 +122,156 @@ jobs:
 ############### Parallel Builds
 ###############
 ###############
-#version: 2.1
-#jobs:
-#    myjob1:
-#      docker:
-#        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
-#      steps:
-#        - checkout
-#        - run:
-#            name: Install python dependencies
-#            command: |
-#              pip install psutil
-#              pip install future
-#              pip install Pillow
-#              pip install wheel
-#              pip install twine
-#              pip install requests
-#              pip install mock
-#              pip install numpy
-#              pip install Image
-#              pip install mxnet==1.5.0
-#              pip install pytest==4.0.0
-#              pip install pytest-mock
-#              pip install pytest-cov
-#        - run:
-#            name: Execute python unit tests
-#            command: |
-#              python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
-#
-#        - store_artifacts:
-#            name: Store python Test results
-#            path: htmlcov
-#            destination: pytest-results
-#
-#    myjob2:
-#      docker:
-#        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
-#      steps:
-#        - checkout
-#        - run:
-#            name: Install python dependencies
-#            command: |
-#              pip install psutil
-#              pip install future
-#              pip install Pillow
-#              pip install wheel
-#              pip install twine
-#              pip install requests
-#              pip install mock
-#              pip install numpy
-#              pip install Image
-#              pip install mxnet==1.5.0
-#              pip install pytest==4.0.0
-#              pip install pytest-mock
-#              pip install pytest-cov
-#
-#        - run:
-#            name: Build and Install MMS
-#            command: |
-#              export _JAVA_OPTIONS="-Xmx1024m"
-#              pip install .
-#
-#        - store_artifacts:
-#            name: Store gradle testng results
-#            path: frontend/server/build/reports/tests/test
-#            destination: frontend-results
-#
-#workflows:
-#  version: 2
-#  build_and_test:
-#    jobs:
-#      - myjob1
-#      - myjob2
+version: 2.1
+jobs:
+    build:
+      docker:
+        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
+      steps:
+        - checkout
+        - run:
+            name: Build frontend
+            command: |
+              ./frontend/gradlew -p frontend clean fJ assemble
+              mkdir -p mms/frontend
+              cp frontend/server/build/libs/server-1.0.jar mms/frontend/model-server.jar
+        - run: rm -rf .git  # Remove repository info to save size
+        - persist_to_workspace:
+            root: .
+            paths:
+              - .
+
+    test1:
+      docker:
+        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
+      steps:
+        - attach_workspace:
+            at: .
+        - run:
+            name: Execute gradle testng
+            command: |
+              export _JAVA_OPTIONS="-Xmx1024m"
+              ./frontend/gradlew -p frontend clean fJ test
+        - store_artifacts:
+            name: Store gradle testng results
+            path: frontend/server/build/reports/tests/test
+            destination: frontend-results
+    test2:
+      docker:
+        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
+      steps:
+        - attach_workspace:
+            at: .
+        - run:
+            name: Install python dependencies
+            command: |
+              pip install pytest==4.0.0
+              pip install pytest-cov
+              pip install pytest-mock
+              pip install psutil
+              pip install mxnet==1.5.0
+              pip install Image
+              pip install numpy
+        - run:
+            name: Execute python unit tests
+            command: |
+              python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
+        - store_artifacts:
+            name: Store python Test results
+            path: htmlcov
+            destination: pytest-results
+
+    test3:
+      docker:
+        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
+      steps:
+        - attach_workspace:
+            at: .
+        - run:
+            name: Install MMS
+            command: |
+              pip install .
+        - run:
+            name: Install nodejs, newman & newman-reporter-html
+            command: |
+              curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+              sudo npm install -g newman newman-reporter-html
+              mkdir test/report
+              mkdir test/model_store
+        - run:
+            name: Start server, Execute API Tests
+            command: |
+              multi-model-server --start --model-store test/model_store >> mms.log 2>&1
+              sleep 30
+              newman run -e test/postman/environment.json --verbose test/postman/management_api_test_collection.json -r cli,html --reporter-html-export test/report/management_report.html
+              multi-model-server --stop
+        - store_artifacts:
+            name: Store server logs from API tests
+            path: docker/mms.log
+            destination: mmslog
+        - store_artifacts:
+            name: Store API test results
+            path: test/report
+            destination: api-results
+
+    test4:
+      docker:
+        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
+      steps:
+        - attach_workspace:
+            at: .
+        - run:
+            name: Install MMS
+            command: |
+              pip install .
+        - run:
+            name: Install dependencies (for benchmark)
+            command: |
+              pip install pandas
+        - run:
+            name: Install jmeter and related plugins
+            command: |
+              cd /opt
+
+              wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.3.tgz
+              tar -xzf apache-jmeter-5.3.tgz
+              cd apache-jmeter-5.3
+              ln -s /opt/apache-jmeter-5.3/bin/jmeter /usr/local/bin/jmeter
+              mkdir -p /home/ubuntu/.linuxbrew/Cellar/jmeter/5.3/libexec/bin/
+              ln -s /opt/apache-jmeter-5.3/bin/jmeter /home/ubuntu/.linuxbrew/Cellar/jmeter/5.3/libexec/bin/jmeter
+
+              wget https://jmeter-plugins.org/get/ -O lib/ext/jmeter-plugins-manager-1.4.jar
+              wget http://search.maven.org/remotecontent?filepath=kg/apc/cmdrunner/2.2/cmdrunner-2.2.jar -O lib/cmdrunner-2.2.jar
+              java -cp lib/ext/jmeter-plugins-manager-1.4.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
+              bin/PluginsManagerCMD.sh install jpgc-synthesis=2.1,jpgc-filterresults=2.1,jpgc-mergeresults=2.1,jpgc-cmd=2.1,jpgc-perfmon=2.1
+        - run:
+            name: Start server, Execute benchmark tests
+            command: |
+              multi-model-server --start
+              sleep 30
+              cd benchmarks
+              python benchmark.py latency
+              multi-model-server --stop
+        - store_artifacts:
+            name: Store Benchmark Latency resnet-18 results
+            path: /tmp/MMSBenchmark/out/latency/resnet-18/report/
+            destination: benchmark-latency-resnet-18
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test1
+          requires:
+            - build
+      - test2
+          requires:
+            - build
+      - test3
+          requires:
+            - build
+      - test4
+          requires:
+            - build
