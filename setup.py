@@ -103,7 +103,7 @@ class BuildPy(setuptools.command.build_py.build_py):
 
     def run(self):
         sys.stderr.flush()
-        self.run_command('build_frontend')
+        # self.run_command('build_frontend')
         setuptools.command.build_py.build_py.run(self)
 
 
@@ -153,9 +153,9 @@ if __name__ == '__main__':
         keywords='Multi Model Server Serving Deep Learning Inference AI',
         packages=pkgs,
         cmdclass={
-            'build_frontend': BuildFrontEnd,
-            'build_plugins': BuildPlugins,
-            'build_py': BuildPy,
+            # 'build_frontend': BuildFrontEnd,
+            # 'build_plugins': BuildPlugins,
+            'build_py': BuildPy
         },
         install_requires=requirements,
         extras_require={
