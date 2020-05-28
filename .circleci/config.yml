@@ -188,6 +188,19 @@ jobs:
         - attach_workspace:
             at: .
         - run:
+            name: Install python dependencies
+            command: |
+              pip install psutil
+              pip install future
+              pip install Pillow
+              pip install wheel
+              pip install twine
+              pip install requests
+              pip install mock
+              pip install numpy
+              pip install Image
+              pip install mxnet==1.5.0
+        - run:
             name: Install MMS
             command: |
               pip install .
@@ -221,6 +234,19 @@ jobs:
       steps:
         - attach_workspace:
             at: .
+        - run:
+            name: Install python dependencies
+            command: |
+              pip install psutil
+              pip install future
+              pip install Pillow
+              pip install wheel
+              pip install twine
+              pip install requests
+              pip install mock
+              pip install numpy
+              pip install Image
+              pip install mxnet==1.5.0
         - run:
             name: Install MMS
             command: |
