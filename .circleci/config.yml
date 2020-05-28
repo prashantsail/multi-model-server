@@ -124,7 +124,7 @@
 ###############
 version: 2.1
 jobs:
-    Build_frontend:
+    build_frontend:
       docker:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
       steps:
@@ -141,7 +141,7 @@ jobs:
             paths:
               - .
 
-    Gradle_testng:
+    gradle_testng:
       docker:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
       steps:
@@ -170,7 +170,7 @@ jobs:
             path: frontend/server/build/reports/tests/test
             destination: frontend-results
 
-    Python_unit_tests:
+    python_unit_tests:
       docker:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
       steps:
@@ -195,7 +195,7 @@ jobs:
             path: htmlcov
             destination: pytest-results
 
-    API_tests:
+    api_tests:
       docker:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
       steps:
@@ -243,7 +243,7 @@ jobs:
             path: test/report
             destination: api-results
 
-    Benchmark:
+    benchmark:
       docker:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
       steps:
@@ -304,16 +304,16 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
-      - test1:
+      - build_frontend
+      - gradle_testng:
           requires:
-            - build
-      - test2:
+            - build_frontend
+      - python_unit_tests:
           requires:
-            - build
-      - test3:
+            - build_frontend
+      - api_tests:
           requires:
-            - build
-      - test4:
+            - build_frontend
+      - benchmark:
           requires:
-            - build
+            - build_frontend
