@@ -124,7 +124,7 @@
 ###############
 version: 2.1
 jobs:
-    build:
+    Build_frontend:
       docker:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
       steps:
@@ -141,7 +141,7 @@ jobs:
             paths:
               - .
 
-    test1:
+    Gradle_testng:
       docker:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
       steps:
@@ -169,7 +169,8 @@ jobs:
             name: Store gradle testng results
             path: frontend/server/build/reports/tests/test
             destination: frontend-results
-    test2:
+
+    Python_unit_tests:
       docker:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
       steps:
@@ -194,7 +195,7 @@ jobs:
             path: htmlcov
             destination: pytest-results
 
-    test3:
+    API_tests:
       docker:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
       steps:
@@ -228,6 +229,7 @@ jobs:
         - run:
             name: Start server, Execute API Tests
             command: |
+              export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start --model-store test/model_store >> mms.log 2>&1
               sleep 30
               newman run -e test/postman/environment.json --verbose test/postman/management_api_test_collection.json -r cli,html --reporter-html-export test/report/management_report.html
@@ -241,7 +243,7 @@ jobs:
             path: test/report
             destination: api-results
 
-    test4:
+    Benchmark:
       docker:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
       steps:
@@ -287,6 +289,7 @@ jobs:
         - run:
             name: Start server, Execute benchmark tests
             command: |
+              export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start
               sleep 30
               cd benchmarks
