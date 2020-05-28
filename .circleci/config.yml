@@ -4,12 +4,65 @@ jobs:
       docker:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
       steps:
-        - run: pip install pandas
+        - checkout
+        - run:
+            name: Install python dependencies
+            command: |
+              pip install psutil
+              pip install future
+              pip install Pillow
+              pip install wheel
+              pip install twine
+              pip install requests
+              pip install mock
+              pip install numpy
+              pip install Image
+              pip install mxnet==1.5.0
+              pip install pytest==4.0.0
+              pip install pytest-mock
+              pip install pytest-cov
+        - run:
+            name: Execute python unit tests
+            command: |
+              python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
+
+        - store_artifacts:
+            name: Store python Test results
+            path: htmlcov
+            destination: pytest-results
+
     myjob2:
       docker:
         - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
       steps:
-        - run: pip show pandas
+        - checkout
+        - run:
+            name: Install python dependencies
+            command: |
+              pip install psutil
+              pip install future
+              pip install Pillow
+              pip install wheel
+              pip install twine
+              pip install requests
+              pip install mock
+              pip install numpy
+              pip install Image
+              pip install mxnet==1.5.0
+              pip install pytest==4.0.0
+              pip install pytest-mock
+              pip install pytest-cov
+
+        - run:
+            name: Build and Install MMS
+            command: |
+              export _JAVA_OPTIONS="-Xmx1024m"
+              pip install .
+
+        - store_artifacts:
+            name: Store gradle testng results
+            path: frontend/server/build/reports/tests/test
+            destination: frontend-results
 
 workflows:
   version: 2
