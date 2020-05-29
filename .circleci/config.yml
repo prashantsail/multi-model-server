@@ -3,7 +3,7 @@
 #jobs:
 #    build:
 #      docker:
-#        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
+#        - image: prashantsail/mms-build:latest
 #
 #      steps:
 #        - checkout
@@ -127,7 +127,7 @@ version: 2.1
 jobs:
     build_frontend:
       docker:
-        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
+        - image: prashantsail/mms-build:latest
       steps:
         - checkout
         - run:
@@ -144,23 +144,23 @@ jobs:
 
     gradle_testng:
       docker:
-        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
+        - image: prashantsail/mms-build:latest
       steps:
         - attach_workspace:
             at: .
-        - run:
-            name: Install python dependencies
-            command: |
-              pip install psutil
-              pip install future
-              pip install Pillow
-              pip install wheel
-              pip install twine
-              pip install requests
-              pip install mock
-              pip install numpy
-              pip install Image
-              pip install mxnet==1.5.0
+#        - run:
+#            name: Install python dependencies
+#            command: |
+#              pip install psutil
+#              pip install future
+#              pip install Pillow
+#              pip install wheel
+#              pip install twine
+#              pip install requests
+#              pip install mock
+#              pip install numpy
+#              pip install Image
+#              pip install mxnet==1.5.0
         - run:
             name: Execute gradle testng
             command: |
@@ -173,20 +173,20 @@ jobs:
 
     python_unit_tests:
       docker:
-        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
+        - image: prashantsail/mms-build:latest
       steps:
         - attach_workspace:
             at: .
-        - run:
-            name: Install python dependencies
-            command: |
-              pip install pytest==4.0.0
-              pip install pytest-cov
-              pip install pytest-mock
-              pip install psutil
-              pip install mxnet==1.5.0
-              pip install Image
-              pip install numpy
+#        - run:
+#            name: Install python dependencies
+#            command: |
+#              pip install pytest==4.0.0
+#              pip install pytest-cov
+#              pip install pytest-mock
+#              pip install psutil
+#              pip install mxnet==1.5.0
+#              pip install Image
+#              pip install numpy
         - run:
             name: Execute python unit tests
             command: |
@@ -198,35 +198,35 @@ jobs:
 
     api_tests:
       docker:
-        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
+        - image: prashantsail/mms-build:latest
       steps:
         - attach_workspace:
             at: .
-        - run:
-            name: Install python dependencies
-            command: |
-              pip install psutil
-              pip install future
-              pip install Pillow
-              pip install wheel
-              pip install twine
-              pip install requests
-              pip install mock
-              pip install numpy
-              pip install Image
-              pip install mxnet==1.5.0
+#        - run:
+#            name: Install python dependencies
+#            command: |
+#              pip install psutil
+#              pip install future
+#              pip install Pillow
+#              pip install wheel
+#              pip install twine
+#              pip install requests
+#              pip install mock
+#              pip install numpy
+#              pip install Image
+#              pip install mxnet==1.5.0
         - run:
             name: Install MMS
             command: |
               pip install .
-        - run:
-            name: Install nodejs, newman & newman-reporter-html
-            command: |
-              curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-              sudo apt-get install -y nodejs
-              sudo npm install -g newman newman-reporter-html
-              mkdir test/report
-              mkdir test/model_store
+#        - run:
+#            name: Install nodejs, newman & newman-reporter-html
+#            command: |
+#              curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+#              sudo apt-get install -y nodejs
+#              sudo npm install -g newman newman-reporter-html
+#              mkdir test/report
+#              mkdir test/model_store
         - run:
             name: Start server, Execute API Tests
             command: |
@@ -246,50 +246,50 @@ jobs:
 
     benchmark:
       docker:
-        - image: awsdeeplearningteam/mms-build:python3.6@sha256:2c1afa8834907ceec641d254dffbf4bcc659ca2d00fd6f2872d7521f32c9fa2e
+        - image: prashantsail/mms-build:latest
       steps:
         - attach_workspace:
             at: .
-        - run:
-            name: Install python dependencies
-            command: |
-              pip install psutil
-              pip install future
-              pip install Pillow
-              pip install wheel
-              pip install twine
-              pip install requests
-              pip install mock
-              pip install numpy
-              pip install Image
-              pip install mxnet==1.5.0
+#        - run:
+#            name: Install python dependencies
+#            command: |
+#              pip install psutil
+#              pip install future
+#              pip install Pillow
+#              pip install wheel
+#              pip install twine
+#              pip install requests
+#              pip install mock
+#              pip install numpy
+#              pip install Image
+#              pip install mxnet==1.5.0
         - run:
             name: Install MMS
             command: |
               pip install .
-        - run:
-            name: Install dependencies (for benchmark)
-            command: |
-              pip install pandas
-        - run:
-            name: Install jmeter and related plugins
-            command: |
-              cd /opt
-
-              wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.3.tgz
-              tar -xzf apache-jmeter-5.3.tgz
-              cd apache-jmeter-5.3
-              ln -s /opt/apache-jmeter-5.3/bin/jmeter /usr/local/bin/jmeter
-              mkdir -p /home/ubuntu/.linuxbrew/Cellar/jmeter/5.3/libexec/bin/
-              ln -s /opt/apache-jmeter-5.3/bin/jmeter /home/ubuntu/.linuxbrew/Cellar/jmeter/5.3/libexec/bin/jmeter
-
-              wget https://jmeter-plugins.org/get/ -O lib/ext/jmeter-plugins-manager-1.4.jar
-              wget http://search.maven.org/remotecontent?filepath=kg/apc/cmdrunner/2.2/cmdrunner-2.2.jar -O lib/cmdrunner-2.2.jar
-              java -cp lib/ext/jmeter-plugins-manager-1.4.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
-              bin/PluginsManagerCMD.sh install jpgc-synthesis=2.1,jpgc-filterresults=2.1,jpgc-mergeresults=2.1,jpgc-cmd=2.1,jpgc-perfmon=2.1
+#        - run:
+#            name: Install dependencies (for benchmark)
+#            command: |
+#              pip install pandas
+#        - run:
+#            name: Install jmeter and related plugins
+#            command: |
+#              cd /opt
+#
+#              wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.3.tgz
+#              tar -xzf apache-jmeter-5.3.tgz
+#              cd apache-jmeter-5.3
+#              ln -s /opt/apache-jmeter-5.3/bin/jmeter /usr/local/bin/jmeter
+#
+#              wget https://jmeter-plugins.org/get/ -O lib/ext/jmeter-plugins-manager-1.4.jar
+#              wget http://search.maven.org/remotecontent?filepath=kg/apc/cmdrunner/2.2/cmdrunner-2.2.jar -O lib/cmdrunner-2.2.jar
+#              java -cp lib/ext/jmeter-plugins-manager-1.4.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
+#              bin/PluginsManagerCMD.sh install jpgc-synthesis=2.1,jpgc-filterresults=2.1,jpgc-mergeresults=2.1,jpgc-cmd=2.1,jpgc-perfmon=2.1
         - run:
             name: Start server, Execute benchmark tests
             command: |
+              mkdir -p /home/ubuntu/.linuxbrew/Cellar/jmeter/5.3/libexec/bin/
+              ln -s /opt/apache-jmeter-5.3/bin/jmeter /home/ubuntu/.linuxbrew/Cellar/jmeter/5.3/libexec/bin/jmeter
               export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start
               sleep 30
