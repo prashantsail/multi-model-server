@@ -197,3 +197,42 @@ RUN wget https://github.com/google/protobuf/archive/v3.4.1.zip \
     && unzip v3.4.1.zip && rm v3.4.1.zip \
     && cd protobuf-3.4.1 && ./autogen.sh && ./configure --prefix=/usr && make && make install && cd .. \
     && rm -r protobuf-3.4.1
+
+
+# 2020 - Updated Build and Test dependencies
+
+# Python packages for MMS Server
+RUN pip install psutil \
+    && pip install future \
+    && pip install Pillow \
+    && pip install wheel \
+    && pip install twine \
+    && pip install requests \
+    && pip install mock \
+    && pip install numpy \
+    && pip install Image \
+    && pip install mxnet==1.5.0
+
+# Python packages for pytests
+RUN pip install pytest==4.0.0 \
+    && pip install pytest-cov \
+    && pip install pytest-mock
+
+# Python packages for benchmark
+RUN pip install pandas
+
+# Install NodeJS and packages for API tests
+RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - \
+    && sudo apt-get install -y nodejs \
+    && sudo npm install -g newman newman-reporter-html
+
+# Install jmeter for benchmark
+RUN cd /opt \
+    && wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.3.tgz \
+    && tar -xzf apache-jmeter-5.3.tgz \
+    && cd apache-jmeter-5.3 \
+    && ln -s /opt/apache-jmeter-5.3/bin/jmeter /usr/local/bin/jmeter \
+    && wget https://jmeter-plugins.org/get/ -O lib/ext/jmeter-plugins-manager-1.4.jar \
+    && wget http://search.maven.org/remotecontent?filepath=kg/apc/cmdrunner/2.2/cmdrunner-2.2.jar -O lib/cmdrunner-2.2.jar \
+    && java -cp lib/ext/jmeter-plugins-manager-1.4.jar org.jmeterplugins.repository.PluginManagerCMDInstaller \
+    && bin/PluginsManagerCMD.sh install jpgc-synthesis=2.1,jpgc-filterresults=2.1,jpgc-mergeresults=2.1,jpgc-cmd=2.1,jpgc-perfmon=2.1
