@@ -225,12 +225,12 @@ jobs:
 #              curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 #              sudo apt-get install -y nodejs
 #              sudo npm install -g newman newman-reporter-html
-#              mkdir test/report
-#              mkdir test/model_store
         - run:
             name: Start server, Execute API Tests
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
+              mkdir test/report
+              mkdir test/model_store
               multi-model-server --start --model-store test/model_store >> mms.log 2>&1
               sleep 30
               newman run -e test/postman/environment.json --verbose test/postman/management_api_test_collection.json -r cli,html --reporter-html-export test/report/management_report.html
