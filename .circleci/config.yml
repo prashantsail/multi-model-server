@@ -59,34 +59,60 @@ jobs:
             command: |
               pip install .
         - run:
-            name: Start server, Execute API Tests
-            command: |
-              export _JAVA_OPTIONS="-Xmx1024m"
+            name: Setup directories
+            commands: |
               mkdir test/report
               mkdir test/model_store
-
+        - run:
+            name: Execute Management API Tests
+            command: |
+              export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start --model-store test/model_store >> mms_management.log 2>&1
               sleep 10
               newman run -e test/postman/environment.json --verbose test/postman/management_api_test_collection.json -r cli,html --reporter-html-export test/report/management_report.html
               multi-model-server --stop
+        - store_artifacts:
+            name: Store server logs from management API tests
+            path: docker/mms_management.log
+            destination: mms_management
+        - store_artifacts:
+            name: Store management API test results
+            path: test/report
+            destination: management-api-results
 
+        - run:
+            name: Execute Inference API Tests
+            command: |
+              export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start --model-store test/model_store >> mms_inference.log 2>&1
               sleep 10
               newman run -e test/postman/environment.json --verbose test/postman/inference_api_test_collection.json -r cli,html --reporter-html-export test/report/inference_report.html
               multi-model-server --stop
+        - store_artifacts:
+            name: Store server logs from inference API tests
+            path: docker/mms_inference.log
+            destination: mms_inference
+        - store_artifacts:
+            name: Store inference API test results
+            path: test/report
+            destination: inference-api-results
 
+        - run:
+            name: Execute https API Tests
+            command: |
+              export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start --mms-config test/resources/config.properties --model-store test/model_store >> mms_https.log 2>&1
               sleep 10
               newman run -e test/postman/environment.json --verbose test/postman/https_test_collection.json -r cli,html --reporter-html-export test/report/https_report.html
               multi-model-server --stop
         - store_artifacts:
-            name: Store server logs from API tests
-            path: docker/mms.log
-            destination: mmslog
+            name: Store server logs from https API tests
+            path: docker/mms_https.log
+            destination: mms_https
         - store_artifacts:
-            name: Store API test results
+            name: Store https API test results
             path: test/report
-            destination: api-results
+            destination: https-api-results
 
     benchmark:
       docker:
