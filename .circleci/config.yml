@@ -73,7 +73,7 @@ jobs:
               multi-model-server --stop
         - store_artifacts:
             name: Store server logs from management API tests
-            path: docker/mms_management.log
+            path: mms_management.log
             destination: mms_management
         - store_artifacts:
             name: Store management API test results
@@ -90,7 +90,7 @@ jobs:
               multi-model-server --stop
         - store_artifacts:
             name: Store server logs from inference API tests
-            path: docker/mms_inference.log
+            path: mms_inference.log
             destination: mms_inference
         - store_artifacts:
             name: Store inference API test results
@@ -107,7 +107,7 @@ jobs:
               multi-model-server --stop
         - store_artifacts:
             name: Store server logs from https API tests
-            path: docker/mms_https.log
+            path: mms_https.log
             destination: mms_https
         - store_artifacts:
             name: Store https API test results
