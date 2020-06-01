@@ -63,6 +63,7 @@ jobs:
             command: |
               mkdir test/report
               mkdir test/model_store
+        # MANAGEMENT API Tests
         - run:
             name: Execute Management API Tests
             command: |
@@ -79,7 +80,7 @@ jobs:
             name: Store management API test results
             path: test/report
             destination: management-api-results
-
+        # INFERENCE API Tests
         - run:
             name: Execute Inference API Tests
             command: |
@@ -96,7 +97,7 @@ jobs:
             name: Store inference API test results
             path: test/report
             destination: inference-api-results
-
+        # HTTPS API Tests
         - run:
             name: Execute https API Tests
             command: |
@@ -140,20 +141,41 @@ jobs:
             path: /tmp/MMSBenchmark/out/latency/resnet-18/report/
             destination: benchmark-latency-resnet-18
 
+    taurus:
+      docker:
+        - image: prashantsail/mms-build:latest
+      steps:
+        - attach_workspace:
+            at: .
+        - run:
+            name: Install MMS
+            command: |
+              pip install .
+        - run:
+            name: Install bzt (blazemeter taurus)
+            command: |
+              pip install bzt
+        - run:
+            cd taurus
+            bzt imageInputModelPlan.jmx.yaml
+
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build_frontend
-      - gradle_testng:
-          requires:
-            - build_frontend
-      - python_unit_tests:
-          requires:
-            - build_frontend
-      - api_tests:
-          requires:
-            - build_frontend
-      - benchmark:
+#      - gradle_testng:
+#          requires:
+#            - build_frontend
+#      - python_unit_tests:
+#          requires:
+#            - build_frontend
+#      - api_tests:
+#          requires:
+#            - build_frontend
+#      - benchmark:
+#          requires:
+#            - build_frontend
+      - taurus:
           requires:
             - build_frontend
