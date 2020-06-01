@@ -46,7 +46,6 @@ reporting:
     condition: '>'
     threshold: 15
     timeframe: 5s
-- module: final-stats
-- module: console
 - module: junit-xml
+  filename: ${TAURUS_ARTIFACTS_DIR}/results.xml
   data-source: pass-fail
