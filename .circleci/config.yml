@@ -101,9 +101,9 @@ jobs:
             name: Execute https API Tests
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
-              multi-model-server --insecure --start --mms-config test/resources/config.properties --model-store test/model_store >> mms_https.log 2>&1
+              multi-model-server --start --mms-config test/resources/config.properties --model-store test/model_store >> mms_https.log 2>&1
               sleep 10
-              newman run -e test/postman/environment.json --verbose test/postman/https_test_collection.json -r cli,html --reporter-html-export test/report/https_report.html
+              newman run --insecure -e test/postman/environment.json --verbose test/postman/https_test_collection.json -r cli,html --reporter-html-export test/report/https_report.html
               multi-model-server --stop
         - store_artifacts:
             name: Store server logs from https API tests
