@@ -161,7 +161,8 @@ jobs:
               multi-model-server --start --models squeezenet=https://s3.amazonaws.com/model-server/model_archive_1.0/squeezenet_v1.1.mar
               sleep 180
               cd taurus
-              bzt -o modules.jmeter.path=/usr/local/bin/jmeter -o settings.artifacts-dir=/tmp/cci-taurus imageInputModelPlan.jmx.yaml
+              curl -O https://s3.amazonaws.com/model-server/inputs/kitten.jpg
+              bzt -q -o modules.jmeter.path=/usr/local/bin/jmeter -o settings.artifacts-dir=/tmp/cci-taurus imageInputModelPlan.jmx.yaml
         - store_artifacts:
             name: Store taurus results
             path: /tmp/cci-taurus
