@@ -60,7 +60,7 @@ jobs:
               pip install .
         - run:
             name: Setup directories
-            commands: |
+            command: |
               mkdir test/report
               mkdir test/model_store
         - run:
