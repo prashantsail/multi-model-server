@@ -44,5 +44,9 @@ reporting:
   - class: bzt.modules.monitoring.MonitoringCriteria
     subject: local/cpu
     condition: '>'
-    threshold: 30
+    threshold: 15
     timeframe: 5s
+- module: final-stats
+- module: console
+- module: junit-xml
+  data-source: pass-fail

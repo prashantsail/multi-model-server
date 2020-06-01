@@ -176,24 +176,26 @@ jobs:
             name: Store taurus results
             path: /tmp/cci-taurus
             destination: taurus-results
+        - store_test_results:
+              path: /tmp/cci-taurus/
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build_frontend
-      - gradle_testng:
-          requires:
-            - build_frontend
-      - python_unit_tests:
-          requires:
-            - build_frontend
-      - api_tests:
-          requires:
-            - build_frontend
-      - benchmark:
-          requires:
-            - build_frontend
+#      - gradle_testng:
+#          requires:
+#            - build_frontend
+#      - python_unit_tests:
+#          requires:
+#            - build_frontend
+#      - api_tests:
+#          requires:
+#            - build_frontend
+#      - benchmark:
+#          requires:
+#            - build_frontend
       - taurus:
           requires:
             - build_frontend
