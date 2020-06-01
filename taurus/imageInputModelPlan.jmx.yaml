@@ -47,5 +47,5 @@ reporting:
     threshold: 15
     timeframe: 5s
 - module: junit-xml
-  filename: ${TAURUS_ARTIFACTS_DIR}/results.xml
+  filename: ${TAURUS_ARTIFACTS_DIR}/output/results.xml
   data-source: pass-fail
