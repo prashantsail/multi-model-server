@@ -156,8 +156,13 @@ jobs:
             command: |
               pip install bzt
         - run:
-            cd taurus
-            bzt imageInputModelPlan.jmx.yaml
+            command: |
+              cd taurus
+              bzt -o modules.jmeter.path=/usr/local/bin/jmeter settings.artifacts-dir=/tmp/cci-taurus imageInputModelPlan.jmx.yaml
+        - store_artifacts:
+            name: Store taurus results
+            path: /tmp/cci-taurus
+            destination: taurus-results
 
 workflows:
   version: 2
