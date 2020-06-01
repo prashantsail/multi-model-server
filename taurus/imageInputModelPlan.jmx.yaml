@@ -33,6 +33,7 @@ services:
   - module: monitoring
     local:
     - interval: 2s
+      logging: True
       metrics:
       - cpu
       - disk-space
@@ -43,5 +44,5 @@ reporting:
   - class: bzt.modules.monitoring.MonitoringCriteria
     subject: local/cpu
     condition: '>'
-    threshold: 30
+    threshold: 6000
     timeframe: 5s
