@@ -157,6 +157,9 @@ jobs:
               pip install bzt
         - run:
             command: |
+              export _JAVA_OPTIONS="-Xmx1024m"
+              multi-model-server --start --models squeezenet=https://s3.amazonaws.com/model-server/model_archive_1.0/squeezenet_v1.1.mar
+              sleep 180
               cd taurus
               bzt -o modules.jmeter.path=/usr/local/bin/jmeter -o settings.artifacts-dir=/tmp/cci-taurus imageInputModelPlan.jmx.yaml
         - store_artifacts:
