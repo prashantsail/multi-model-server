@@ -156,6 +156,7 @@ jobs:
             command: |
               pip install bzt
         - run:
+            name: Trigger Blazemeter Taurus
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start --models squeezenet=https://s3.amazonaws.com/model-server/model_archive_1.0/squeezenet_v1.1.mar >> mms.log 2>&1
@@ -181,18 +182,18 @@ workflows:
   build_and_test:
     jobs:
       - build_frontend
-#      - gradle_testng:
-#          requires:
-#            - build_frontend
-#      - python_unit_tests:
-#          requires:
-#            - build_frontend
-#      - api_tests:
-#          requires:
-#            - build_frontend
-#      - benchmark:
-#          requires:
-#            - build_frontend
+      - gradle_testng:
+          requires:
+            - build_frontend
+      - python_unit_tests:
+          requires:
+            - build_frontend
+      - api_tests:
+          requires:
+            - build_frontend
+      - benchmark:
+          requires:
+            - build_frontend
       - taurus:
           requires:
             - build_frontend
