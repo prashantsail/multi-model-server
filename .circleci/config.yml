@@ -156,17 +156,28 @@ jobs:
             command: |
               pip install bzt
         - run:
+            name: Trigger Blazemeter Taurus
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
-              multi-model-server --start --models squeezenet=https://s3.amazonaws.com/model-server/model_archive_1.0/squeezenet_v1.1.mar
-              sleep 180
+              multi-model-server --start --models squeezenet=https://s3.amazonaws.com/model-server/model_archive_1.0/squeezenet_v1.1.mar >> mms.log 2>&1
+              sleep 90
               cd taurus
               curl -O https://s3.amazonaws.com/model-server/inputs/kitten.jpg
-              bzt -q -o modules.jmeter.path=/usr/local/bin/jmeter -o settings.artifacts-dir=/tmp/cci-taurus imageInputModelPlan.jmx.yaml
+              bzt -o modules.jmeter.path=/opt/apache-jmeter-5.3/bin/jmeter \
+                  -o settings.artifacts-dir=/tmp/cci-taurus \
+                  -o modules.console.disable=true \
+                  imageInputModelPlan.jmx.yaml \
+                  -report
+        - store_artifacts:
+            name: Store server logs from Taurus tests
+            path: mms.log
+            destination: mms
         - store_artifacts:
             name: Store taurus results
             path: /tmp/cci-taurus
             destination: taurus-results
+        - store_test_results:
+              path: /tmp/cci-taurus/
 
 workflows:
   version: 2
