@@ -44,5 +44,5 @@ reporting:
   - class: bzt.modules.monitoring.MonitoringCriteria
     subject: local/cpu
     condition: '>'
-    threshold: 6000
+    threshold: 60
     timeframe: 5s
