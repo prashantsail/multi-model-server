@@ -158,7 +158,7 @@ jobs:
         - run:
             command: |
               cd taurus
-              bzt -o modules.jmeter.path=/usr/local/bin/jmeter settings.artifacts-dir=/tmp/cci-taurus imageInputModelPlan.jmx.yaml
+              bzt -o modules.jmeter.path=/usr/local/bin/jmeter -o settings.artifacts-dir=/tmp/cci-taurus imageInputModelPlan.jmx.yaml
         - store_artifacts:
             name: Store taurus results
             path: /tmp/cci-taurus
