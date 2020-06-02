@@ -61,7 +61,9 @@ jobs:
         - run:
             name: Setup directories
             command: |
-              mkdir test/report
+              mkdir test/management-api/
+              mkdir test/inference-api/
+              mkdir test/https-api/
               mkdir test/model_store
         # MANAGEMENT API Tests
         - run:
@@ -70,16 +72,16 @@ jobs:
               export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start --model-store test/model_store >> mms_management.log 2>&1
               sleep 10
-              newman run -e test/postman/environment.json --verbose test/postman/management_api_test_collection.json -r cli,html --reporter-html-export test/report/management_report.html
+              newman run -e test/postman/environment.json \
+                         --verbose test/postman/management_api_test_collection.json \
+                         -r cli,html --reporter-html-export test/management-api/management-api-report.html
               multi-model-server --stop
         - store_artifacts:
             name: Store server logs from management API tests
             path: mms_management.log
-            destination: mms_management
         - store_artifacts:
             name: Store management API test results
-            path: test/report
-            destination: management-api-results
+            path: test/management-api
         # INFERENCE API Tests
         - run:
             name: Execute Inference API Tests
@@ -87,16 +89,14 @@ jobs:
               export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start --model-store test/model_store >> mms_inference.log 2>&1
               sleep 10
-              newman run -e test/postman/environment.json --verbose test/postman/inference_api_test_collection.json -d test/postman/inference_data.json -r cli,html --reporter-html-export test/report/inference_report.html
+              newman run -e test/postman/environment.json --verbose test/postman/inference_api_test_collection.json -d test/postman/inference_data.json -r cli,html --reporter-html-export test/inference-api/inference-api-report.html
               multi-model-server --stop
         - store_artifacts:
             name: Store server logs from inference API tests
             path: mms_inference.log
-            destination: mms_inference
         - store_artifacts:
             name: Store inference API test results
-            path: test/report
-            destination: inference-api-results
+            path: test/inference-api
         # HTTPS API Tests
         - run:
             name: Execute https API Tests
@@ -104,16 +104,14 @@ jobs:
               export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start --mms-config test/resources/config.properties --model-store test/model_store >> mms_https.log 2>&1
               sleep 10
-              newman run --insecure -e test/postman/environment.json --verbose test/postman/https_test_collection.json -r cli,html --reporter-html-export test/report/https_report.html
+              newman run --insecure -e test/postman/environment.json --verbose test/postman/https_test_collection.json -r cli,html --reporter-html-export test/https-api/https-api-report.html
               multi-model-server --stop
         - store_artifacts:
             name: Store server logs from https API tests
             path: mms_https.log
-            destination: mms_https
         - store_artifacts:
             name: Store https API test results
-            path: test/report
-            destination: https-api-results
+            path: test/https-api
 
     benchmark:
       docker:
