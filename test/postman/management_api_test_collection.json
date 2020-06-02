@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "e8b08920-ef84-4d61-9cc4-0d1980420661",
-		"name": "torchserve_regression_management",
+		"_postman_id": "5c45fe29-4bb1-4df4-9e13-a4fd410e4775",
+		"name": "MMS - management_api_collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -11,7 +11,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "4345cf93-7f38-48f2-8d5b-e016921ef9cc",
+						"id": "4f706340-af84-431b-affd-6d6f53c89e80",
 						"exec": [
 							"pm.test(\"Successful POST request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
@@ -54,7 +54,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "4c7db1cf-ad4e-4319-9ab4-5b9535bedc8b",
+						"id": "3d6c7158-f729-42cf-a2ec-4e62b7d764d0",
 						"exec": [
 							"pm.test(\"Successful POST request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
@@ -88,7 +88,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "6147f0a0-4499-4221-9f11-c19d2264c579",
+						"id": "54f1209e-4819-4f06-9d26-f39593a889d9",
 						"exec": [
 							"pm.test(\"Successful POST request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
@@ -121,7 +121,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "b83fefa6-95f4-430d-8eae-49027ff18d3b",
+						"id": "47ac7b07-04c2-4128-9662-387e26446f7f",
 						"exec": [
 							"pm.test(\"Successful PUT request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);",
@@ -161,7 +161,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "5f9c1a50-a093-462f-ad80-d30a189e327f",
+						"id": "3a8cf27e-b0d9-4df9-bdcf-9eadb239807d",
 						"exec": [
 							"pm.test(\"Successful PUT request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);",
@@ -205,7 +205,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "43664900-168d-4817-8029-0d4970da4e4f",
+						"id": "b73619d3-3abc-4628-8e52-ecbcda561191",
 						"exec": [
 							"pm.test(\"Successful PUT request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);",
@@ -249,7 +249,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "df4888a0-dcb3-495e-9241-12b0f6efc912",
+						"id": "0e10d089-7183-4adf-ba81-d14678f5ecc7",
 						"exec": [
 							"pm.test(\"Successful DELETE request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);",
@@ -283,7 +283,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "25348a3b-43c8-49d4-bed3-b454ee2d67a7",
+						"id": "5f79bffa-f260-440d-9d49-a3553972b8eb",
 						"exec": [
 							"pm.test(\"Successful POST request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
@@ -334,7 +334,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "56cdf0e8-990b-4fbb-ad01-95bb632d71c8",
+						"id": "74b42a61-dda4-4d70-9543-e61a5be2dd9b",
 						"exec": [
 							"pm.test(\"Successful POST request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
@@ -381,7 +381,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "cfa547f6-ff7b-4f7b-bfa2-73e551b079b2",
+						"id": "d74f53dc-5aac-4afc-8acf-849a309054e5",
 						"exec": [
 							"pm.test(\"Successful DELETE request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
@@ -415,7 +415,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "61018156-a426-445a-954c-4c93b8b76805",
+						"id": "11206673-aec5-4d26-a06c-96fab1fc81f3",
 						"exec": [
 							"pm.test(\"Successful POST request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
@@ -462,9 +462,11 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "8647cdf8-7bf1-4a14-93dc-f2d820311291",
+						"id": "55acdbb9-cae8-4ad1-b2a4-b50a3549e8be",
 						"exec": [
-							""
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -499,9 +501,11 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "bcf271b1-192d-4dfb-8d72-81a5b71e07e7",
+						"id": "d1b17cfc-90af-4b61-af07-081224ba7f81",
 						"exec": [
-							""
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -540,7 +544,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "245c18b2-6f73-4376-9fd9-8f7b557e4ee2",
+						"id": "e00d8108-3ce9-4a02-9fe1-3e38907d7f7b",
 						"exec": [
 							"pm.test(\"Successful PUT request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);",
@@ -580,7 +584,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "bd868fe3-9605-43a3-8479-c099b06cfafc",
+						"id": "f575937f-1665-4cf4-91a7-31c351eb9424",
 						"exec": [
 							"pm.test(\"Successful PUT request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);",
@@ -628,7 +632,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "e394650b-c581-4486-8e84-7ae73b3f6f14",
+						"id": "a65c2a28-de18-4ac5-a893-9aa2cf3cef77",
 						"exec": [
 							"pm.test(\"Successful PUT request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);",
@@ -676,7 +680,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "c89a9a83-cfce-4358-97b0-887fdffcac9b",
+						"id": "96e4be74-20d4-4343-b950-2738d6034341",
 						"exec": [
 							"pm.test(\"Successful PUT request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);",
@@ -716,7 +720,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "fcf8c679-5381-4e46-b2bb-a018b64a3e4f",
+						"id": "d2c89755-a457-48ef-8dea-fdd61e88d1e5",
 						"exec": [
 							"pm.test(\"Successful PUT request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);",
@@ -756,7 +760,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "5a65f58b-ca1d-4cf9-bfd3-58f2981a38bf",
+						"id": "427b68f9-de96-49b8-9477-450fa580e257",
 						"exec": [
 							"pm.test(\"Invalid URL POST request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([400]);",
@@ -799,7 +803,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "6e15df5e-83bc-495a-a3f9-8c0f14e5d26a",
+						"id": "36836026-4477-493b-898a-b642628a51d3",
 						"exec": [
 							"pm.test(\"Valid ERROR message\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([404]);",
@@ -833,9 +837,11 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "68b9be13-4bbd-4c08-9510-30def37156c1",
+						"id": "ccc07f12-6f45-4213-b4f5-e37f7d0ceadb",
 						"exec": [
-							""
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -870,7 +876,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "7d2bd270-0fb7-4704-9b1d-93506d793394",
+						"id": "ec7d233e-54bf-456a-a148-811385a34cc4",
 						"exec": [
 							"pm.test(\"Valid ERROR message\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([400]);",
@@ -914,7 +920,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "479f400d-3587-490b-b829-fc228858d6f4",
+						"id": "08052d51-fd23-4249-a17f-933e557bdacc",
 						"exec": [
 							"pm.test(\"Valid ERROR message\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([404]);",
@@ -942,28 +948,5 @@
 			},
 			"response": []
 		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"id": "84683778-66be-4c64-9a4a-98ea022a2be7",
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"id": "9c4ff214-9a84-495f-86d8-f729aa85ae14",
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
