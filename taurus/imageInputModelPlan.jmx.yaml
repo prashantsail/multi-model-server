@@ -44,7 +44,7 @@ reporting:
   - class: bzt.modules.monitoring.MonitoringCriteria
     subject: local/cpu
     condition: '>'
-    threshold: 15
+    threshold: 60
     timeframe: 5s
 - module: junit-xml
   filename: ${TAURUS_ARTIFACTS_DIR}/output/results.xml
