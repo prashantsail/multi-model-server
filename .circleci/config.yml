@@ -12,7 +12,10 @@ jobs:
               ./frontend/gradlew -p frontend clean fJ assemble
               mkdir -p mms/frontend
               cp frontend/server/build/libs/server-1.0.jar mms/frontend/model-server.jar
-        - run: rm -rf .git  # Remove repository info to save size
+        - run:
+            name: Optimize before moving to workspace
+            command: |
+              rm -rf .git
         - persist_to_workspace:
             root: .
             paths:
@@ -32,7 +35,6 @@ jobs:
         - store_artifacts:
             name: Store gradle testng results
             path: frontend/server/build/reports/tests/test
-            destination: frontend
 
     python_unit_tests:
       docker:
@@ -47,7 +49,6 @@ jobs:
         - store_artifacts:
             name: Store python Test results
             path: htmlcov
-            destination: pytest
 
     api_tests:
       docker:
