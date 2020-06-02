@@ -68,7 +68,7 @@ jobs:
               mkdir test/model_store
         # MANAGEMENT API Tests
         - run:
-            name: Execute Management API Tests
+            name: Start MMS, Execute Management API Tests, Stop MMS
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start --model-store test/model_store >> mms_management.log 2>&1
@@ -85,7 +85,7 @@ jobs:
             path: test/management-api
         # INFERENCE API Tests
         - run:
-            name: Execute Inference API Tests
+            name: Start MMS, Execute Inference API Tests, Stop MMS
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start --model-store test/model_store >> mms_inference.log 2>&1
@@ -103,7 +103,7 @@ jobs:
             path: test/inference-api
         # HTTPS API Tests
         - run:
-            name: Execute https API Tests
+            name: Start MMS, Execute https API Tests, Stop MMS
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start --mms-config test/resources/config.properties \
@@ -131,16 +131,19 @@ jobs:
             command: |
               pip install .
         - run:
-            name: Start server, Execute benchmark tests
+            name: Start MMS, Execute benchmark tests, Stop MMS
             command: |
               mkdir -p /home/ubuntu/.linuxbrew/Cellar/jmeter/5.3/libexec/bin/
               ln -s /opt/apache-jmeter-5.3/bin/jmeter /home/ubuntu/.linuxbrew/Cellar/jmeter/5.3/libexec/bin/jmeter
               export _JAVA_OPTIONS="-Xmx1024m"
-              multi-model-server --start
+              multi-model-server --start >> mms.log 2>&1
               sleep 30
               cd benchmarks
               python benchmark.py latency
               multi-model-server --stop
+        - store_artifacts:
+            name: Store server logs from benchmark tests
+            path: mms.log
         - store_artifacts:
             name: Store Benchmark Latency resnet-18 results
             path: /tmp/MMSBenchmark/out/latency/resnet-18/report/
@@ -157,11 +160,11 @@ jobs:
             command: |
               pip install .
         - run:
-            name: Install bzt (blazemeter taurus)
+            name: Install Taurus
             command: |
               pip install bzt
         - run:
-            name: Trigger Blazemeter Taurus
+            name: Start MMS, Execute Taurus testcases, Stop MMS
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
               multi-model-server --start --models squeezenet=https://s3.amazonaws.com/model-server/model_archive_1.0/squeezenet_v1.1.mar >> mms.log 2>&1
@@ -173,16 +176,14 @@ jobs:
                   -o modules.console.disable=true \
                   imageInputModelPlan.jmx.yaml \
                   -report
+              multi-model-server --stop
         - store_artifacts:
             name: Store server logs from Taurus tests
             path: mms.log
-            destination: mms
         - store_artifacts:
-            name: Store taurus results
+            name: Store Taurus results
             path: /tmp/cci-taurus/
             destination: taurus-results
-        - store_test_results:
-              path: /tmp/cci-taurus/
 
 workflows:
   version: 2
