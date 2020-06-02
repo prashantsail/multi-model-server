@@ -3,6 +3,7 @@ jobs:
     build_frontend:
       docker:
         - image: prashantsail/mms-build:latest
+      resource_class: small
       steps:
         - checkout
         - run:
