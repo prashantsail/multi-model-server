@@ -66,7 +66,7 @@ jobs:
             path: mms_management.log
         - store_artifacts:
             name: Store management API test results
-            path: management-api-report.html
+            path: test/management-api-report.html
         # INFERENCE API Tests
         - run:
             name: Start MMS, Execute Inference API Tests, Stop MMS
@@ -78,7 +78,7 @@ jobs:
             path: mms_inference.log
         - store_artifacts:
             name: Store inference API test results
-            path: inference-api-report.html
+            path: test/inference-api-report.html
         # HTTPS API Tests
         - run:
             name: Start MMS, Execute https API Tests, Stop MMS
@@ -90,7 +90,7 @@ jobs:
             path: mms_https.log
         - store_artifacts:
             name: Store https API test results
-            path: https-api-report.html
+            path: test/https-api-report.html
 
     benchmark:
       docker:
