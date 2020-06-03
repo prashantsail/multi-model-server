@@ -1,24 +1,24 @@
 #!/bin/bash
 
-MODEL_STORE_DIR = 'test/model_store'
+MODEL_STORE_DIR='test/model_store'
 
-MMS_LOG_FILE_MANAGEMENT = 'mms_management.log'
-MMS_LOG_FILE_INFERENCE = 'mms_inference.log'
-MMS_LOG_FILE_HTTPS = 'mms_https.log'
+MMS_LOG_FILE_MANAGEMENT='mms_management.log'
+MMS_LOG_FILE_INFERENCE='mms_inference.log'
+MMS_LOG_FILE_HTTPS='mms_https.log'
 
-MMS_CONFIG_FILE_HTTPS = 'test/resources/config.properties'
+MMS_CONFIG_FILE_HTTPS='test/resources/config.properties'
 
-POSTMAN_ENV_FILE = 'test/postman/environment.json'
+POSTMAN_ENV_FILE='test/postman/environment.json'
 
-POSTMAN_COLLECTION_MANAGEMENT = 'test/postman/management_api_test_collection.json'
-POSTMAN_COLLECTION_INFERENCE = 'test/postman/inference_api_test_collection.json'
-POSTMAN_COLLECTION_HTTPS = 'test/postman/https_test_collection.json'
+POSTMAN_COLLECTION_MANAGEMENT='test/postman/management_api_test_collection.json'
+POSTMAN_COLLECTION_INFERENCE='test/postman/inference_api_test_collection.json'
+POSTMAN_COLLECTION_HTTPS='test/postman/https_test_collection.json'
 
-POSTMAN_DATA_FILE_INFERENCE = 'test/postman/inference_data.json'
+POSTMAN_DATA_FILE_INFERENCE='test/postman/inference_data.json'
 
-REPORT_FILE_MANAGEMENT = 'test/management-api-report.html'
-REPORT_FILE_INFERENCE = 'test/inference-api-report.html'
-REPORT_FILE_HTTPS = 'test/https-api-report.html'
+REPORT_FILE_MANAGEMENT='test/management-api-report.html'
+REPORT_FILE_INFERENCE='test/inference-api-report.html'
+REPORT_FILE_HTTPS='test/https-api-report.html'
 
 start_mms_server() {
   multi-model-server --start --model-store $MODEL_STORE_DIR >> $MMS_LOG_FILE 2>&1
@@ -69,8 +69,14 @@ case $1 in
    'https')
       trigger_https_tests
       ;;
+   'ALL')
+      trigger_management_tests
+      trigger_inference_tests
+      trigger_https_tests
+      ;;
    *)
-     echo $1 ' - Invalid test suite'
+     echo $1 'Invalid'
+     echo 'Please specify any one of - management | inference | https | ALL'
      exit 1
      ;;
 esac
