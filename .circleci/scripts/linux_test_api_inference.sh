@@ -1,12 +1,19 @@
 #!/bin/bash
 
+MODEL_STORE_DIR = 'test/model_store'
+MMS_LOG_FILE = 'mms_inference.log'
 
-mkdir -p test/model_store
+POSTMAN_ENV_FILE = 'test/postman/environment.json'
+POSTMAN_COLLECTION_JSON = 'test/postman/inference_api_test_collection.json'
+POSTMAN_DATA_FILE = 'test/postman/inference_data.json'
+REPORT_FILE = 'test/inference-api-report.html'
 
-multi-model-server --start --model-store test/model_store >> mms_inference.log 2>&1
+mkdir -p $MODEL_STORE_DIR
+
+multi-model-server --start --model-store $MODEL_STORE_DIR >> $MMS_LOG_FILE 2>&1
 sleep 10
-newman run -e test/postman/environment.json \
-           --verbose test/postman/inference_api_test_collection.json \
-           -d test/postman/inference_data.json \
-           -r cli,html --reporter-html-export test/inference-api-report.html
+
+newman run -e $POSTMAN_ENV_FILE $POSTMAN_COLLECTION_JSON -d $POSTMAN_DATA_FILE \
+           -r cli,html --reporter-html-export $REPORT_FILE --verbose
+
 multi-model-server --stop
