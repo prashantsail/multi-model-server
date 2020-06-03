@@ -8,14 +8,10 @@ jobs:
         - checkout
         - run:
             name: Build frontend
-            command: |
-              ./frontend/gradlew -p frontend clean fJ assemble
-              mkdir -p mms/frontend
-              cp frontend/server/build/libs/server-1.0.jar mms/frontend/model-server.jar
+            command: .circleci/scripts/linux_build_frontend.sh
         - run:
             name: Optimize before moving to workspace
-            command: |
-              rm -rf .git
+            command: rm -rf .git  # Save disk space & time required for copy to\from workspace
         - persist_to_workspace:
             root: .
             paths:
@@ -31,7 +27,7 @@ jobs:
             name: Execute gradle testng
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
-              ./frontend/gradlew -p frontend clean fJ test
+              .circleci/scripts/linux_build_frontend.sh
         - store_artifacts:
             name: Store gradle testng results
             path: frontend/server/build/reports/tests/test
@@ -191,20 +187,20 @@ workflows:
   build_and_test:
     jobs:
       - build_frontend
-      - gradle_testng:
-          requires:
-            - build_frontend
-      - python_unit_tests:
-          requires:
-            - build_frontend
-      - api_tests:
-          requires:
-            - build_frontend
-      - benchmark:
-          requires:
-            - build_frontend
-      - taurus:
-          requires:
-            - build_frontend
+#      - gradle_testng:
+#          requires:
+#            - build_frontend
+#      - python_unit_tests:
+#          requires:
+#            - build_frontend
+#      - api_tests:
+#          requires:
+#            - build_frontend
+#      - benchmark:
+#          requires:
+#            - build_frontend
+#      - taurus:
+#          requires:
+#            - build_frontend
 
 #
