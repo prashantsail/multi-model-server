@@ -156,11 +156,9 @@ workflows:
       - api_tests:
           requires:
             - build_frontend
-#      - benchmark:
-#          requires:
-#            - build_frontend
-#      - taurus:
-#          requires:
-#            - build_frontend
-
-#
+      - benchmark:
+          requires:
+            - build_frontend
+      - taurus:
+          requires:
+            - build_frontend
