@@ -133,7 +133,7 @@ jobs:
             name: Start MMS, Execute Taurus testcases, Stop MMS
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
-              .circleci/scripts/linux_test_benchmark.sh
+              .circleci/scripts/linux_test_taurus.sh
         - store_artifacts:
             name: Store server logs from Taurus tests
             path: mms.log
