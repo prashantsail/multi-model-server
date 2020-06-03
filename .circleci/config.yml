@@ -66,7 +66,7 @@ jobs:
             path: mms_management.log
         - store_artifacts:
             name: Store management API test results
-            path: test/management-api
+            path: management-api-report.html
         # INFERENCE API Tests
         - run:
             name: Start MMS, Execute Inference API Tests, Stop MMS
@@ -78,7 +78,7 @@ jobs:
             path: mms_inference.log
         - store_artifacts:
             name: Store inference API test results
-            path: test/inference-api
+            path: inference-api-report.html
         # HTTPS API Tests
         - run:
             name: Start MMS, Execute https API Tests, Stop MMS
@@ -90,7 +90,7 @@ jobs:
             path: mms_https.log
         - store_artifacts:
             name: Store https API test results
-            path: test/https-api
+            path: https-api-report.html
 
     benchmark:
       docker:
@@ -162,15 +162,15 @@ workflows:
   build_and_test:
     jobs:
       - build_frontend
-#      - gradle_testng:
-#          requires:
-#            - build_frontend
-#      - python_unit_tests:
-#          requires:
-#            - build_frontend
-#      - api_tests:
-#          requires:
-#            - build_frontend
+      - gradle_testng:
+          requires:
+            - build_frontend
+      - python_unit_tests:
+          requires:
+            - build_frontend
+      - api_tests:
+          requires:
+            - build_frontend
 #      - benchmark:
 #          requires:
 #            - build_frontend

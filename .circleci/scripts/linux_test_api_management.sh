@@ -1,11 +1,17 @@
 #!/bin/bash
 
-mkdir test/model_store
-mkdir test/management-api/
+MODEL_STORE_DIR = 'test/model_store'
+MMS_LOG_FILE = 'mms_management.log'
 
-multi-model-server --start --model-store test/model_store >> mms_management.log 2>&1
+POSTMAN_ENV_FILE = 'test/postman/environment.json'
+POSTMAN_COLLECTION_JSON = 'test/postman/management_api_test_collection.json'
+REPORT_FILE = 'test/management-api-report.html'
+
+mkdir -p $MODEL_STORE_DIR
+
+multi-model-server --start --model-store $MODEL_STORE_DIR >> $MMS_LOG_FILE 2>&1
 sleep 10
-newman run -e test/postman/environment.json \
-           --verbose test/postman/management_api_test_collection.json \
-           -r cli,html --reporter-html-export test/management-api/management-api-report.html
+
+newman run -e $POSTMAN_ENV_FILE $POSTMAN_COLLECTION_JSON -r cli,html --reporter-html-export $REPORT_FILE --verbose
+
 multi-model-server --stop
