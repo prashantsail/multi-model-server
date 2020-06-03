@@ -8,10 +8,7 @@ jobs:
         - checkout
         - run:
             name: Build frontend
-            command: |
-              ./frontend/gradlew -p frontend clean fJ assemble
-              mkdir -p mms/frontend
-              cp frontend/server/build/libs/server-1.0.jar mms/frontend/model-server.jar
+            command: ./scripts/linux_frontend_build.sh
         - run:
             name: Optimize before moving to workspace
             command: |
