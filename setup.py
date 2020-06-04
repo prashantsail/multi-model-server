@@ -65,8 +65,16 @@ class AssembleFrontEnd(Command):
     Class defined to run custom commands.
     """
     description = 'Build Model Server Frontend'
+    user_options = []
+
     source_server_file = os.path.abspath('frontend/server/build/libs/server-1.0.jar')
     dest_file_name = os.path.abspath('mms/frontend/model-server.jar')
+
+    def initialize_options(self):
+        print('Test 1')
+
+    def finalize_options(self):
+        print('Test 2')
 
     # noinspection PyMethodMayBeStatic
     def run(self):
@@ -102,6 +110,13 @@ class TestFrontEnd(Command):
     Class defined to run gradle test command.
     """
     description = 'Test Model Server Frontend'
+    user_options = []
+
+    def initialize_options(self):
+        print('Test 1')
+
+    def finalize_options(self):
+        print('Test 2')
 
     def run(self):
         try:
@@ -112,7 +127,7 @@ class TestFrontEnd(Command):
             assert 0, "Command not found"
 
 
-class LocalInstall(Command):
+class LocalInstall(setuptools.command.build_py.build_py):
     """
     Class defined to locally install MMS project.
     """
