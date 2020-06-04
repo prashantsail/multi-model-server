@@ -42,7 +42,6 @@ import mms
 
 pkgs = find_packages()
 
-
 def pypi_description():
     """
     Imports the long description for the project page
@@ -60,21 +59,13 @@ def detect_model_server_version():
     return mms.__version__.strip() + 'b' + str(date.today()).replace('-', '')
 
 
-class AssembleFrontEnd(Command):
+class BuildFrontEnd(setuptools.command.build_py.build_py):
     """
     Class defined to run custom commands.
     """
     description = 'Build Model Server Frontend'
-    user_options = []
-
     source_server_file = os.path.abspath('frontend/server/build/libs/server-1.0.jar')
     dest_file_name = os.path.abspath('mms/frontend/model-server.jar')
-
-    def initialize_options(self):
-        print('Test 1')
-
-    def finalize_options(self):
-        print('Test 2')
 
     # noinspection PyMethodMayBeStatic
     def run(self):
@@ -99,42 +90,10 @@ class AssembleFrontEnd(Command):
             rmtree('build/lib/')
 
         try:
-            subprocess.check_call('frontend/gradlew -p frontend clean fJ assemble', shell=True)
+            subprocess.check_call('frontend/gradlew -p frontend clean build', shell=True)
         except OSError:
             assert 0, "build failed"
         copy2(self.source_server_file, self.dest_file_name)
-
-
-class TestFrontEnd(Command):
-    """
-    Class defined to run gradle test command.
-    """
-    description = 'Test Model Server Frontend'
-    user_options = []
-
-    def initialize_options(self):
-        print('Test 1')
-
-    def finalize_options(self):
-        print('Test 2')
-
-    def run(self):
-        try:
-            subprocess.check_call('frontend/gradlew -p frontend test', shell=True)
-        except subprocess.CalledProcessError:
-            assert 0, "Test Failed"
-        except OSError:
-            assert 0, "Command not found"
-
-
-class LocalInstall(setuptools.command.build_py.build_py):
-    """
-    Class defined to locally install MMS project.
-    """
-    description = 'Local Install Model Server'
-
-    def run(self):
-        setuptools.command.build_py.build_py.run(self)
 
 
 class BuildPy(setuptools.command.build_py.build_py):
@@ -144,9 +103,8 @@ class BuildPy(setuptools.command.build_py.build_py):
 
     def run(self):
         sys.stderr.flush()
-        self.run_command('assemble_frontend')
-        self.run_command('test_frontend')
-        self.run_command('local_install')
+        self.run_command('build_frontend')
+        setuptools.command.build_py.build_py.run(self)
 
 
 class BuildPlugins(Command):
@@ -195,11 +153,9 @@ if __name__ == '__main__':
         keywords='Multi Model Server Serving Deep Learning Inference AI',
         packages=pkgs,
         cmdclass={
-            'assemble_frontend': AssembleFrontEnd,
-            'test_frontend': TestFrontEnd,
-            'local_install': LocalInstall,
+            'build_frontend': BuildFrontEnd,
             'build_plugins': BuildPlugins,
-            'build_py': BuildPy
+            'build_py': BuildPy,
         },
         install_requires=requirements,
         extras_require={

@@ -8,10 +8,15 @@ jobs:
         - checkout
         - run:
             name: Build frontend
-            command: .circleci/scripts/linux_build_frontend.sh
+            command: |
+              export _JAVA_OPTIONS="-Xmx1024m"
+              .circleci/scripts/linux_build_frontend.sh
         - run:
             name: Optimize before moving to workspace
             command: rm -rf .git  # Save disk space & time required for copy to\from workspace
+        - store_artifacts:
+            name: Store gradle testng results
+            path: frontend/server/build/reports/tests/test
         - persist_to_workspace:
             root: .
             paths:
@@ -54,7 +59,7 @@ jobs:
         - run:
             name: Install MMS
             command: |
-              python setup.py local_install
+              pip install dist/*.whl
         # MANAGEMENT API Tests
         - run:
             name: Start MMS, Execute Management API Tests, Stop MMS
@@ -101,7 +106,7 @@ jobs:
         - run:
             name: Install MMS
             command: |
-              python setup.py local_install
+              pip install dist/*.whl
         - run:
             name: Start MMS, Execute benchmark tests, Stop MMS
             command: |
@@ -124,7 +129,7 @@ jobs:
         - run:
             name: Install MMS
             command: |
-              python setup.py local_install
+              pip install dist/*.whl
         - run:
             name: Install Taurus
             command: |
@@ -147,9 +152,9 @@ workflows:
   build_and_test:
     jobs:
       - build_frontend
-      - gradle_testng:
-          requires:
-            - build_frontend
+#      - gradle_testng:
+#          requires:
+#            - build_frontend
       - python_unit_tests:
           requires:
             - build_frontend
