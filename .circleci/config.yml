@@ -9,7 +9,7 @@ jobs:
         - run:
             name: Build frontend
             command: |
-              export _JAVA_OPTIONS="-Xmx1024m"
+              # export _JAVA_OPTIONS="-Xmx1024m"
               .circleci/scripts/linux_build.sh
         - run:
             name: Optimize before moving to workspace
