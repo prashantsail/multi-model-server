@@ -14,7 +14,7 @@ commands:
           command: pip install dist/*.whl
 
 executors:
-  docker-python-3.6:
+  docker-python-3:
     docker:
       - image: prashantsail/mms-build:latest
     environment:
@@ -22,7 +22,7 @@ executors:
 
 jobs:
     build:
-      executor: docker-python-3.6
+      executor: docker-python-3
       steps:
         - checkout
         - run:
@@ -40,7 +40,7 @@ jobs:
               - .
 
     python_tests:
-      executor: docker-python-3.6
+      executor: docker-python-3
       steps:
         - attach-mms-workspace
         - run:
@@ -51,7 +51,7 @@ jobs:
             path: htmlcov
 
     api_tests:
-      executor: docker-python-3.6
+      executor: docker-python-3
       steps:
         - attach-mms-workspace
         - install-mms-server
@@ -87,7 +87,7 @@ jobs:
             path: test/https-api-report.html
 
     benchmark:
-      executor: docker-python-3.6
+      executor: docker-python-3
       steps:
         - attach-mms-workspace
         - install-mms-server
@@ -103,7 +103,7 @@ jobs:
             destination: benchmark-latency-resnet-18
 
     taurus:
-      executor: docker-python-3.6
+      executor: docker-python-3
       steps:
         - attach-mms-workspace
         - install-mms-server
