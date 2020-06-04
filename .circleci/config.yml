@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-    build_frontend:
+    build:
       docker:
         - image: prashantsail/mms-build:latest
       resource_class: small
@@ -10,7 +10,7 @@ jobs:
             name: Build frontend
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
-              .circleci/scripts/linux_build_frontend.sh
+              .circleci/scripts/linux_build.sh
         - run:
             name: Optimize before moving to workspace
             command: rm -rf .git  # Save disk space & time required for copy to\from workspace
@@ -21,21 +21,6 @@ jobs:
             root: .
             paths:
               - .
-
-    gradle_testng:
-      docker:
-        - image: prashantsail/mms-build:latest
-      steps:
-        - attach_workspace:
-            at: .
-        - run:
-            name: Execute gradle testng
-            command: |
-              export _JAVA_OPTIONS="-Xmx1024m"
-              .circleci/scripts/linux_test_frontend.sh
-        - store_artifacts:
-            name: Store gradle testng results
-            path: frontend/server/build/reports/tests/test
 
     python_unit_tests:
       docker:
@@ -151,19 +136,16 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build_frontend
-#      - gradle_testng:
-#          requires:
-#            - build_frontend
+      - build
       - python_unit_tests:
           requires:
-            - build_frontend
+            - build
       - api_tests:
           requires:
-            - build_frontend
+            - build
       - benchmark:
           requires:
-            - build_frontend
+            - build
       - taurus:
           requires:
-            - build_frontend
+            - build
