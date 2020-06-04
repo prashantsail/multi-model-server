@@ -1,15 +1,33 @@
 version: 2.1
+
+commands:
+  attach-mms-workspace:
+    description: "Attach the MMS directory which was saved into workspace"
+    steps:
+      - attach_workspace:
+          at: .
+  install-mms-server:
+    description: "Install MMS server from a wheel"
+    steps:
+      - run:
+          name: Install MMS
+          command: pip install dist/*.whl
+
+executors:
+  docker-python-3.6:
+    docker:
+      - image: prashantsail/mms-build:latest
+    environment:
+      _JAVA_OPTIONS: "-Xmx2048m"
+
 jobs:
     build:
-      docker:
-        - image: prashantsail/mms-build:latest
+      executor: docker-python-3.6
       steps:
         - checkout
         - run:
             name: Build frontend
-            command: |
-              export _JAVA_OPTIONS="-Xmx2048m"
-              .circleci/scripts/linux_build.sh
+            command: .circleci/scripts/linux_build.sh
         - run:
             name: Optimize before moving to workspace
             command: rm -rf .git  # Save disk space & time required for copy to\from workspace
@@ -21,12 +39,10 @@ jobs:
             paths:
               - .
 
-    python_unit_tests:
-      docker:
-        - image: prashantsail/mms-build:latest
+    python_tests:
+      executor: docker-python-3.6
       steps:
-        - attach_workspace:
-            at: .
+        - attach-mms-workspace
         - run:
             name: Execute python unit tests
             command: .circleci/scripts/linux_test_python.sh
@@ -35,21 +51,14 @@ jobs:
             path: htmlcov
 
     api_tests:
-      docker:
-        - image: prashantsail/mms-build:latest
+      executor: docker-python-3.6
       steps:
-        - attach_workspace:
-            at: .
-        - run:
-            name: Install MMS
-            command: |
-              pip install dist/*.whl
+        - attach-mms-workspace
+        - install-mms-server
         # MANAGEMENT API Tests
         - run:
             name: Start MMS, Execute Management API Tests, Stop MMS
-            command: |
-              export _JAVA_OPTIONS="-Xmx1024m"
-              .circleci/scripts/linux_test_api.sh management
+            command: .circleci/scripts/linux_test_api.sh management
         - store_artifacts:
             name: Store server logs from management API tests
             path: mms_management.log
@@ -59,9 +68,7 @@ jobs:
         # INFERENCE API Tests
         - run:
             name: Start MMS, Execute Inference API Tests, Stop MMS
-            command: |
-              export _JAVA_OPTIONS="-Xmx1024m"
-              .circleci/scripts/linux_test_api.sh inference
+            command: .circleci/scripts/linux_test_api.sh inference
         - store_artifacts:
             name: Store server logs from inference API tests
             path: mms_inference.log
@@ -71,9 +78,7 @@ jobs:
         # HTTPS API Tests
         - run:
             name: Start MMS, Execute https API Tests, Stop MMS
-            command: |
-              export _JAVA_OPTIONS="-Xmx1024m"
-              .circleci/scripts/linux_test_api.sh https
+            command: .circleci/scripts/linux_test_api.sh https
         - store_artifacts:
             name: Store server logs from https API tests
             path: mms_https.log
@@ -82,20 +87,13 @@ jobs:
             path: test/https-api-report.html
 
     benchmark:
-      docker:
-        - image: prashantsail/mms-build:latest
+      executor: docker-python-3.6
       steps:
-        - attach_workspace:
-            at: .
-        - run:
-            name: Install MMS
-            command: |
-              pip install dist/*.whl
+        - attach-mms-workspace
+        - install-mms-server
         - run:
             name: Start MMS, Execute benchmark tests, Stop MMS
-            command: |
-              export _JAVA_OPTIONS="-Xmx1024m"
-              .circleci/scripts/linux_test_benchmark.sh
+            command: .circleci/scripts/linux_test_benchmark.sh
         - store_artifacts:
             name: Store server logs from benchmark tests
             path: mms.log
@@ -105,24 +103,16 @@ jobs:
             destination: benchmark-latency-resnet-18
 
     taurus:
-      docker:
-        - image: prashantsail/mms-build:latest
+      executor: docker-python-3.6
       steps:
-        - attach_workspace:
-            at: .
-        - run:
-            name: Install MMS
-            command: |
-              pip install dist/*.whl
+        - attach-mms-workspace
+        - install-mms-server
         - run:
             name: Install Taurus
-            command: |
-              pip install bzt
+            command: pip install bzt
         - run:
             name: Start MMS, Execute Taurus testcases, Stop MMS
-            command: |
-              export _JAVA_OPTIONS="-Xmx1024m"
-              .circleci/scripts/linux_test_taurus.sh
+            command: .circleci/scripts/linux_test_taurus.sh
         - store_artifacts:
             name: Store server logs from Taurus tests
             path: mms.log
@@ -136,7 +126,7 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - python_unit_tests:
+      - python_tests:
           requires:
             - build
       - api_tests:
