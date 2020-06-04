@@ -1,3 +1,5 @@
 #!/bin/bash
 
-./frontend/gradlew -p frontend test
+#./frontend/gradlew -p frontend test
+
+python setup.py test_frontend

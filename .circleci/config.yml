@@ -54,7 +54,7 @@ jobs:
         - run:
             name: Install MMS
             command: |
-              pip install .
+              python setup.py local_install
         # MANAGEMENT API Tests
         - run:
             name: Start MMS, Execute Management API Tests, Stop MMS
@@ -101,7 +101,7 @@ jobs:
         - run:
             name: Install MMS
             command: |
-              pip install .
+              python setup.py local_install
         - run:
             name: Start MMS, Execute benchmark tests, Stop MMS
             command: |
@@ -124,7 +124,7 @@ jobs:
         - run:
             name: Install MMS
             command: |
-              pip install .
+              python setup.py local_install
         - run:
             name: Install Taurus
             command: |

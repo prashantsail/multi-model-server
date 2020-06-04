@@ -42,6 +42,7 @@ import mms
 
 pkgs = find_packages()
 
+
 def pypi_description():
     """
     Imports the long description for the project page
@@ -59,7 +60,7 @@ def detect_model_server_version():
     return mms.__version__.strip() + 'b' + str(date.today()).replace('-', '')
 
 
-class BuildFrontEnd(setuptools.command.build_py.build_py):
+class AssembleFrontEnd:
     """
     Class defined to run custom commands.
     """
@@ -90,10 +91,35 @@ class BuildFrontEnd(setuptools.command.build_py.build_py):
             rmtree('build/lib/')
 
         try:
-            subprocess.check_call('frontend/gradlew -p frontend clean fJ build', shell=True)
+            subprocess.check_call('frontend/gradlew -p frontend clean fJ assemble', shell=True)
         except OSError:
             assert 0, "build failed"
         copy2(self.source_server_file, self.dest_file_name)
+
+
+class TestFrontEnd:
+    """
+    Class defined to run gradle test command.
+    """
+    description = 'Test Model Server Frontend'
+
+    def run(self):
+        try:
+            subprocess.check_call('frontend/gradlew -p frontend test', shell=True)
+        except subprocess.CalledProcessError:
+            assert 0, "Test Failed"
+        except OSError:
+            assert 0, "Command not found"
+
+
+class LocalInstall(setuptools.command.build_py.build_py):
+    """
+    Class defined to locally install MMS project.
+    """
+    description = 'Local Install Model Server'
+
+    def run(self):
+        setuptools.command.build_py.build_py.run(self)
 
 
 class BuildPy(setuptools.command.build_py.build_py):
@@ -103,8 +129,9 @@ class BuildPy(setuptools.command.build_py.build_py):
 
     def run(self):
         sys.stderr.flush()
-        # self.run_command('build_frontend')
-        setuptools.command.build_py.build_py.run(self)
+        self.run_command('assemble_frontend')
+        self.run_command('test_frontend')
+        self.run_command('local_install')
 
 
 class BuildPlugins(Command):
@@ -153,8 +180,10 @@ if __name__ == '__main__':
         keywords='Multi Model Server Serving Deep Learning Inference AI',
         packages=pkgs,
         cmdclass={
-            # 'build_frontend': BuildFrontEnd,
-            # 'build_plugins': BuildPlugins,
+            'assemble_frontend': AssembleFrontEnd,
+            'test_frontend': TestFrontEnd,
+            'local_install': LocalInstall,
+            'build_plugins': BuildPlugins,
             'build_py': BuildPy
         },
         install_requires=requirements,
