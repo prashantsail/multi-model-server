@@ -60,7 +60,7 @@ def detect_model_server_version():
     return mms.__version__.strip() + 'b' + str(date.today()).replace('-', '')
 
 
-class AssembleFrontEnd:
+class AssembleFrontEnd(Command):
     """
     Class defined to run custom commands.
     """
@@ -97,7 +97,7 @@ class AssembleFrontEnd:
         copy2(self.source_server_file, self.dest_file_name)
 
 
-class TestFrontEnd:
+class TestFrontEnd(Command):
     """
     Class defined to run gradle test command.
     """
@@ -112,7 +112,7 @@ class TestFrontEnd:
             assert 0, "Command not found"
 
 
-class LocalInstall(setuptools.command.build_py.build_py):
+class LocalInstall(Command):
     """
     Class defined to locally install MMS project.
     """
