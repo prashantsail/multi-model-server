@@ -1,5 +1,14 @@
 version: 2.1
 
+
+executors:
+  docker-python-3:
+    docker:
+      - image: prashantsail/mms-build:latest
+    environment:
+      _JAVA_OPTIONS: "-Xmx2048m"
+
+
 commands:
   attach-mms-workspace:
     description: "Attach the MMS directory which was saved into workspace"
@@ -18,8 +27,9 @@ commands:
     description: "Execute API tests from a collection"
     parameters:
       collection:
-        type: string
-        default: "management"
+        type: enum
+        enum: [management, inference, https]
+        default: management
     steps:
       - run:
           name: Start MMS, Execute << parameters.collection >> API Tests, Stop MMS
@@ -30,14 +40,6 @@ commands:
       - store_artifacts:
           name: Store << parameters.collection >> API test results
           path: test/<< parameters.collection >>-api-report.html
-
-
-executors:
-  docker-python-3:
-    docker:
-      - image: prashantsail/mms-build:latest
-    environment:
-      _JAVA_OPTIONS: "-Xmx2048m"
 
 
 jobs:
@@ -116,6 +118,7 @@ jobs:
             name: Store Taurus results
             path: /tmp/cci-taurus/
             destination: taurus-results
+
 
 workflows:
   version: 2
