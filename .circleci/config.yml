@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-    build_frontend:
+    build:
       docker:
         - image: prashantsail/mms-build:latest
       resource_class: small
@@ -9,32 +9,18 @@ jobs:
         - run:
             name: Build frontend
             command: |
-              ./frontend/gradlew -p frontend clean fJ assemble
-              mkdir -p mms/frontend
-              cp frontend/server/build/libs/server-1.0.jar mms/frontend/model-server.jar
+              # export _JAVA_OPTIONS="-Xmx1024m"
+              .circleci/scripts/linux_build.sh
         - run:
             name: Optimize before moving to workspace
-            command: |
-              rm -rf .git
+            command: rm -rf .git  # Save disk space & time required for copy to\from workspace
+        - store_artifacts:
+            name: Store gradle testng results
+            path: frontend/server/build/reports/tests/test
         - persist_to_workspace:
             root: .
             paths:
               - .
-
-    gradle_testng:
-      docker:
-        - image: prashantsail/mms-build:latest
-      steps:
-        - attach_workspace:
-            at: .
-        - run:
-            name: Execute gradle testng
-            command: |
-              export _JAVA_OPTIONS="-Xmx1024m"
-              ./frontend/gradlew -p frontend clean fJ test
-        - store_artifacts:
-            name: Store gradle testng results
-            path: frontend/server/build/reports/tests/test
 
     python_unit_tests:
       docker:
@@ -44,8 +30,7 @@ jobs:
             at: .
         - run:
             name: Execute python unit tests
-            command: |
-              python -m pytest --cov-report html:htmlcov --cov=mms/ mms/tests/unit_tests/
+            command: .circleci/scripts/linux_test_python.sh
         - store_artifacts:
             name: Store python Test results
             path: htmlcov
@@ -59,67 +44,43 @@ jobs:
         - run:
             name: Install MMS
             command: |
-              pip install .
-        - run:
-            name: Setup directories
-            command: |
-              mkdir test/management-api/
-              mkdir test/inference-api/
-              mkdir test/https-api/
-              mkdir test/model_store
+              pip install dist/*.whl
         # MANAGEMENT API Tests
         - run:
             name: Start MMS, Execute Management API Tests, Stop MMS
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
-              multi-model-server --start --model-store test/model_store >> mms_management.log 2>&1
-              sleep 10
-              newman run -e test/postman/environment.json \
-                         --verbose test/postman/management_api_test_collection.json \
-                         -r cli,html --reporter-html-export test/management-api/management-api-report.html
-              multi-model-server --stop
+              .circleci/scripts/linux_test_api.sh management
         - store_artifacts:
             name: Store server logs from management API tests
             path: mms_management.log
         - store_artifacts:
             name: Store management API test results
-            path: test/management-api
+            path: test/management-api-report.html
         # INFERENCE API Tests
         - run:
             name: Start MMS, Execute Inference API Tests, Stop MMS
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
-              multi-model-server --start --model-store test/model_store >> mms_inference.log 2>&1
-              sleep 10
-              newman run -e test/postman/environment.json \
-                         --verbose test/postman/inference_api_test_collection.json \
-                         -d test/postman/inference_data.json \
-                         -r cli,html --reporter-html-export test/inference-api/inference-api-report.html
-              multi-model-server --stop
+              .circleci/scripts/linux_test_api.sh inference
         - store_artifacts:
             name: Store server logs from inference API tests
             path: mms_inference.log
         - store_artifacts:
             name: Store inference API test results
-            path: test/inference-api
+            path: test/inference-api-report.html
         # HTTPS API Tests
         - run:
             name: Start MMS, Execute https API Tests, Stop MMS
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
-              multi-model-server --start --mms-config test/resources/config.properties \
-                                 --model-store test/model_store >> mms_https.log 2>&1
-              sleep 10
-              newman run --insecure -e test/postman/environment.json \
-                         --verbose test/postman/https_test_collection.json \
-                         -r cli,html --reporter-html-export test/https-api/https-api-report.html
-              multi-model-server --stop
+              .circleci/scripts/linux_test_api.sh https
         - store_artifacts:
             name: Store server logs from https API tests
             path: mms_https.log
         - store_artifacts:
             name: Store https API test results
-            path: test/https-api
+            path: test/https-api-report.html
 
     benchmark:
       docker:
@@ -130,18 +91,12 @@ jobs:
         - run:
             name: Install MMS
             command: |
-              pip install .
+              pip install dist/*.whl
         - run:
             name: Start MMS, Execute benchmark tests, Stop MMS
             command: |
-              mkdir -p /home/ubuntu/.linuxbrew/Cellar/jmeter/5.3/libexec/bin/
-              ln -s /opt/apache-jmeter-5.3/bin/jmeter /home/ubuntu/.linuxbrew/Cellar/jmeter/5.3/libexec/bin/jmeter
               export _JAVA_OPTIONS="-Xmx1024m"
-              multi-model-server --start >> mms.log 2>&1
-              sleep 30
-              cd benchmarks
-              python benchmark.py latency
-              multi-model-server --stop
+              .circleci/scripts/linux_test_benchmark.sh
         - store_artifacts:
             name: Store server logs from benchmark tests
             path: mms.log
@@ -159,7 +114,7 @@ jobs:
         - run:
             name: Install MMS
             command: |
-              pip install .
+              pip install dist/*.whl
         - run:
             name: Install Taurus
             command: |
@@ -168,16 +123,7 @@ jobs:
             name: Start MMS, Execute Taurus testcases, Stop MMS
             command: |
               export _JAVA_OPTIONS="-Xmx1024m"
-              multi-model-server --start --models squeezenet=https://s3.amazonaws.com/model-server/model_archive_1.0/squeezenet_v1.1.mar >> mms.log 2>&1
-              sleep 90
-              cd taurus
-              curl -O https://s3.amazonaws.com/model-server/inputs/kitten.jpg
-              bzt -o modules.jmeter.path=/opt/apache-jmeter-5.3/bin/jmeter \
-                  -o settings.artifacts-dir=/tmp/cci-taurus/ \
-                  -o modules.console.disable=true \
-                  imageInputModelPlan.jmx.yaml \
-                  -report
-              multi-model-server --stop
+              .circleci/scripts/linux_test_taurus.sh
         - store_artifacts:
             name: Store server logs from Taurus tests
             path: mms.log
@@ -190,21 +136,16 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build_frontend
-      - gradle_testng:
-          requires:
-            - build_frontend
+      - build
       - python_unit_tests:
           requires:
-            - build_frontend
+            - build
       - api_tests:
           requires:
-            - build_frontend
+            - build
       - benchmark:
           requires:
-            - build_frontend
+            - build
       - taurus:
           requires:
-            - build_frontend
-
-#
+            - build
