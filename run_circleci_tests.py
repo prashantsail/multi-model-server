@@ -16,6 +16,7 @@ processed_config = {}
 xformed_file = 'xformed.yml'
 xformed_config = {}
 xformed_job_name = 'mms_xformed_job'
+blacklisted_steps = ['persist_to_workspace', 'attach_workspace', 'store_artifacts']
 
 # Create processed YAML using circleci cli's 'config process' commands
 subprocess.check_call('circleci config process .circleci/config.yml > {}'.format(processed_file), shell=True)
@@ -36,7 +37,7 @@ def getJobsToExec(job_name):
         if(isinstance(job, str) and job_name == job):
             # We have reached a root job (outter most parent), no further traversal
             break
-        elif(isinstance(job, dict) and job_name == list(job.keys())[0]):
+        elif(isinstance(job, dict) and job_name == list(job)[0]):
             # Find all parent jpbs, recurse to find their respective ancestors
             parent_jobs = job[job_name].get('requires',[])
             for pjob in parent_jobs :
@@ -46,16 +47,18 @@ def getJobsToExec(job_name):
 
 # The list might contain duplicate parent jobs due to muliple fan-ins like config; remove the duplicates
 jobs_to_exec = list(OrderedDict.fromkeys(getJobsToExec(job)))
-first_job = jobs_to_exec[0]
 
 # Merge all the steps from jobs to be executed
 def getJobSteps(result, job_name):
-    return result + processed_config['jobs'][job_name]['steps']
+    job_steps = processed_config['jobs'][job_name]['steps']
+    filtered_job_steps = list(filter(lambda step: list(step)[0] not in blacklisted_steps, job_steps))
+    return result + filtered_job_steps
 
 merged_steps = reduce(getJobSteps, jobs_to_exec, [])
 
 # Create a new job, using the first job as a reference
 # This ensures config like executors, environments, etc are maintained as it is from the first job
+first_job = jobs_to_exec[0]
 xformed_job = copy.deepcopy(processed_config['jobs'][first_job])
 
 # Add the merged steps to this newly introduced job
