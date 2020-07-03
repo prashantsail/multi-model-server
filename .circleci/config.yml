@@ -178,7 +178,7 @@ workflows:
           matrix:
             <<: *matrix
             exclude:
-              - executor: "py27"
+              - executor: "py36"
 
 #  nightly:
 #    triggers:
