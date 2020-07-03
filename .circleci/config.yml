@@ -180,45 +180,45 @@ workflows:
             exclude:
               - executor: "py27"
 
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - *build
-      - *modelarchiver
-      - *python-tests
-      - &api-tests
-        api-tests:
-          name: api-tests-<< matrix.executor >>
-          requires:
-            - build-<< matrix.executor >>
-          matrix: *matrix
-
-  weekly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * 0"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - *build
-      - benchmark:
-          name: benchmark-<< matrix.executor >>
-          requires:
-            - build-<< matrix.executor >>
-          matrix: *matrix
-      - performance-regression:
-          name: performance-regression-<< matrix.executor >>
-          requires:
-            - build-<< matrix.executor >>
-          matrix:
-            <<: *matrix
-            exclude:
-              - executor: "py27"
+#  nightly:
+#    triggers:
+#      - schedule:
+#          cron: "0 0 * * *"
+#          filters:
+#            branches:
+#              only:
+#                - master
+#    jobs:
+#      - *build
+#      - *modelarchiver
+#      - *python-tests
+#      - &api-tests
+#        api-tests:
+#          name: api-tests-<< matrix.executor >>
+#          requires:
+#            - build-<< matrix.executor >>
+#          matrix: *matrix
+#
+#  weekly:
+#    triggers:
+#      - schedule:
+#          cron: "0 0 * * 0"
+#          filters:
+#            branches:
+#              only:
+#                - master
+#    jobs:
+#      - *build
+#      - benchmark:
+#          name: benchmark-<< matrix.executor >>
+#          requires:
+#            - build-<< matrix.executor >>
+#          matrix: *matrix
+#      - performance-regression:
+#          name: performance-regression-<< matrix.executor >>
+#          requires:
+#            - build-<< matrix.executor >>
+#          matrix:
+#            <<: *matrix
+#            exclude:
+#              - executor: "py27"
