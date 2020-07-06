@@ -16,7 +16,7 @@ modules:
 services:
   - module: shellexec
     prepare:
-#      - "ps aux | grep '[c]om.amazonaws.ml.mms.ModelServer' | awk '{print $2}' | xargs kill -9"
+      - "ps aux | grep '[c]om.amazonaws.ml.mms.ModelServer' | awk '{print $2}' | xargs kill -9"
       - "multi-model-server --start > /dev/null 2>&1"
       - "sleep 10s"
     post-process:
